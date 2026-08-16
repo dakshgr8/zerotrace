@@ -61,7 +61,7 @@ export const generateCryptoHash = (prefix: string = '0x'): string => {
 };
 
 // Local storage simulated ledger keys
-const LEDGER_KEY = 'zerotrace_prototype_balances_v2';
+const LEDGER_KEY = 'zerotrace_prototype_balances_v4';
 
 interface LedgerStore {
   [account: string]: {
@@ -72,9 +72,9 @@ interface LedgerStore {
 
 const getInitialLedger = (): LedgerStore => {
   return {
-    [DEMO_ACCOUNTS[0].address.toLowerCase()]: { ztc: 1248.70, inr: 1500000 },
+    [DEMO_ACCOUNTS[0].address.toLowerCase()]: { ztc: 0.00, inr: 1500000 },
     [DEMO_ACCOUNTS[1].address.toLowerCase()]: { ztc: 0.00, inr: 250000 },
-    [DEMO_ACCOUNTS[2].address.toLowerCase()]: { ztc: 50.00, inr: 5000000 },
+    [DEMO_ACCOUNTS[2].address.toLowerCase()]: { ztc: 0.00, inr: 5000000 },
   };
 };
 

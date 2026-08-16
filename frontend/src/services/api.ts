@@ -45,122 +45,14 @@ const DEFAULT_PROJECTS: Project[] = [
   },
 ];
 
-const DEFAULT_CLAIMS: Claim[] = [
-  {
-    id: 1,
-    claim_uid: 'CLM-PRJ-SOLAR-BHADLA-01-987CA446',
-    project_id: 1,
-    project_code: 'PRJ-SOLAR-BHADLA-01',
-    project_name: 'Bhadla Solar Phase IV (500 MW)',
-    corporate_wallet: DEMO_ACCOUNTS[0].address,
-    period_start: '2026-08-16T00:00:00Z',
-    period_end: '2026-08-16T23:59:59Z',
-    vintage_year: 2026,
-    requested_mwh: 849.6,
-    validated_mwh: 828.36,
-    co2_offset_tonnes: 594.57,
-    risk_score: 8.5,
-    status: 'APPROVED',
-    ipfs_cid: 'QmX7zBhadlaSolarMRVComplianceReportBatch001',
-    claim_digest: '0xcb4bcda3f48ed7cf06d0a1680e54604e785cf71f448df7a8cdb92f54c357878b',
-    oracle_signature: '0xd89a500d9ce281a91763784618274a9182374618273648172634817263481726348172634817263481726348172634817263481726348172634817263481721b',
-    verifier_address: DEMO_ACCOUNTS[1].address,
-    verifier_notes: 'Verified against substation grid export meter (97.5% efficiency ratio) and satellite baseline.',
-    created_at: new Date(Date.now() - 3600000).toISOString(),
-    reviewed_at: new Date(Date.now() - 1800000).toISOString(),
-  },
-  {
-    id: 2,
-    claim_uid: 'CLM-PRJ-SOLAR-REWA-02-B1498C22',
-    project_id: 2,
-    project_code: 'PRJ-SOLAR-REWA-02',
-    project_name: 'Rewa Ultra Mega Solar Park (250 MW)',
-    corporate_wallet: DEMO_ACCOUNTS[0].address,
-    period_start: '2026-08-15T00:00:00Z',
-    period_end: '2026-08-15T23:59:59Z',
-    vintage_year: 2026,
-    requested_mwh: 1250.0,
-    validated_mwh: 1218.75,
-    co2_offset_tonnes: 872.63,
-    risk_score: 11.2,
-    status: 'MINTED',
-    ipfs_cid: 'QmR8wRewaSolarMRVComplianceReportBatch002',
-    claim_digest: '0xce5554308eb3690b41067a06bd5e2a7f4bcfc2328ae811defe19296703b8fa18',
-    oracle_signature: '0x1162b5d6cb8105cd9db55d2849b626f3458402d8fe41df4fbac2226ae388820d7d4765741a9eb0f419ffbee0adcf97af3f1991103c2fdb2f2d29a63719f7e9621b',
-    tx_hash: '0x7a98019d7f261d0d30fcfb525fc3e53cc68d79cc6df86a467cdce2268c0e9bda',
-    verifier_address: DEMO_ACCOUNTS[1].address,
-    verifier_notes: 'Substation meter match confirmed.',
-    created_at: new Date(Date.now() - 86400000).toISOString(),
-    reviewed_at: new Date(Date.now() - 80000000).toISOString(),
-  },
-  {
-    id: 3,
-    claim_uid: 'CLM-PRJ-SOLAR-PAVAGADA-03-D82A0F11',
-    project_id: 3,
-    project_code: 'PRJ-SOLAR-PAVAGADA-03',
-    project_name: 'Pavagada Solar Park (300 MW)',
-    corporate_wallet: DEMO_ACCOUNTS[0].address,
-    period_start: '2026-08-16T06:00:00Z',
-    period_end: '2026-08-16T18:00:00Z',
-    vintage_year: 2026,
-    requested_mwh: 650.0,
-    validated_mwh: 633.75,
-    co2_offset_tonnes: 453.77,
-    risk_score: 12.0,
-    status: 'PENDING_REVIEW',
-    created_at: new Date().toISOString(),
-  }
-];
-
-const DEFAULT_LISTINGS: MarketplaceListing[] = [
-  {
-    listing_id: 1,
-    seller_wallet: DEMO_ACCOUNTS[0].address,
-    project_type: 'Mega Solar Park',
-    project_name: 'Bhadla Solar Phase IV',
-    vintage_year: 2026,
-    total_amount: 50.0,
-    remaining_amount: 50.0,
-    unit_price_inr: 1250.0,
-    unit_price_eth: 0.005,
-    active: true,
-    created_at: new Date(Date.now() - 7200000).toISOString(),
-    tx_hash: '0x0ad667b3c4211742e980a8d6af69655b325a7a38865e0105e70c5eabbddbac5c',
-  },
-  {
-    listing_id: 2,
-    seller_wallet: DEMO_ACCOUNTS[0].address,
-    project_type: 'C&I Rooftop & Ground Solar',
-    project_name: 'Rewa Solar Mega Park',
-    vintage_year: 2026,
-    total_amount: 35.0,
-    remaining_amount: 35.0,
-    unit_price_inr: 1320.0,
-    unit_price_eth: 0.00528,
-    active: true,
-    created_at: new Date(Date.now() - 3600000).toISOString(),
-    tx_hash: '0xedf439587eb0741054a8e3213b33ef9547ca9fc912f1854473d3566f81c3f441',
-  },
-];
-
-const DEFAULT_RETIREMENTS: Retirement[] = [
-  {
-    id: 1,
-    certificate_id: '0x7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069',
-    burner_wallet: DEMO_ACCOUNTS[2].address,
-    corporate_beneficiary: 'Corporate ESG Sustainability Fund',
-    reason: 'Scope 1 & 2 Net Zero Neutralization',
-    amount_tonnes: 15.0,
-    tx_hash: '0xb098acb20e42ad1c91754c2a3da0cfbd4c9f8c67caafafc830d5417c69d772d4',
-    block_number: 18429210,
-    timestamp: new Date(Date.now() - 14400000).toISOString(),
-  },
-];
+const DEFAULT_CLAIMS: Claim[] = [];
+const DEFAULT_LISTINGS: MarketplaceListing[] = [];
+const DEFAULT_RETIREMENTS: Retirement[] = [];
 
 // Local Storage Helper Store Keys
-const STORE_CLAIMS = 'zerotrace_store_claims_v3';
-const STORE_LISTINGS = 'zerotrace_store_listings_v3';
-const STORE_RETIREMENTS = 'zerotrace_store_retirements_v3';
+const STORE_CLAIMS = 'zerotrace_store_claims_v4';
+const STORE_LISTINGS = 'zerotrace_store_listings_v4';
+const STORE_RETIREMENTS = 'zerotrace_store_retirements_v4';
 
 const getStore = <T>(key: string, defaultVal: T): T => {
   if (typeof window === 'undefined') return defaultVal;
@@ -211,8 +103,8 @@ export const api = {
       total_generation_mwh: parseFloat(totalMwh.toFixed(1)),
       total_credits_minted: parseFloat(totalMinted.toFixed(2)),
       total_credits_retired: parseFloat(totalRetired.toFixed(2)),
-      total_trades: totalTrades + 1,
-      total_volume_inr: totalVolINR + 18750,
+      total_trades: totalTrades,
+      total_volume_inr: totalVolINR,
       active_listings_count: listings.filter(l => l.active).length,
     };
   },
