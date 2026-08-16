@@ -24,8 +24,8 @@ REGIONAL_CUF_BENCHMARKS = {
     "KARNATAKA_SOLAR": {"expected_cuf": 0.215, "min_cuf": 0.16, "max_cuf": 0.26},
     "TAMIL_NADU_SOLAR": {"expected_cuf": 0.210, "min_cuf": 0.15, "max_cuf": 0.25},
     "MAHARASHTRA_SOLAR": {"expected_cuf": 0.205, "min_cuf": 0.15, "max_cuf": 0.25},
+    "MADHYA_PRADESH_SOLAR": {"expected_cuf": 0.228, "min_cuf": 0.16, "max_cuf": 0.27},
     "DEFAULT_SOLAR": {"expected_cuf": 0.220, "min_cuf": 0.15, "max_cuf": 0.28},
-    "DEFAULT_WIND": {"expected_cuf": 0.310, "min_cuf": 0.22, "max_cuf": 0.42},
 }
 
 # Standard Diurnal Solar Irradiance Profile (Hourly GHI factor 0 to 1 relative to peak)
@@ -40,12 +40,12 @@ def get_region_benchmark(location_name: str) -> dict:
     location_upper = location_name.upper()
     if "RAJASTHAN" in location_upper or "BHADLA" in location_upper:
         return REGIONAL_CUF_BENCHMARKS["RAJASTHAN_DESERT"]
-    elif "GUJARAT" in location_upper or "KUTCH" in location_upper:
+    elif "GUJARAT" in location_upper or "CHARANKA" in location_upper:
         return REGIONAL_CUF_BENCHMARKS["GUJARAT_SOLAR"]
     elif "KARNATAKA" in location_upper or "PAVAGADA" in location_upper:
         return REGIONAL_CUF_BENCHMARKS["KARNATAKA_SOLAR"]
+    elif "MADHYA" in location_upper or "REWA" in location_upper:
+        return REGIONAL_CUF_BENCHMARKS["MADHYA_PRADESH_SOLAR"]
     elif "TAMIL" in location_upper or "KAMUTHI" in location_upper:
         return REGIONAL_CUF_BENCHMARKS["TAMIL_NADU_SOLAR"]
-    elif "WIND" in location_upper:
-        return REGIONAL_CUF_BENCHMARKS["DEFAULT_WIND"]
     return REGIONAL_CUF_BENCHMARKS["DEFAULT_SOLAR"]

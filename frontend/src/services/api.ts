@@ -106,6 +106,10 @@ export const api = {
     return res.json();
   },
 
+  getIPFSDocument: async (cid: string): Promise<any> => {
+    return api.getIPFSReport(cid);
+  },
+
   // Marketplace
   getListings: async (): Promise<MarketplaceListing[]> => {
     const res = await fetch(`${API_BASE}/marketplace/listings`);

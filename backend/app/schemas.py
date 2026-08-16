@@ -43,10 +43,11 @@ class TelemetryDataPoint(BaseModel):
     timestamp: str
     scada_active_power_mw: float
     inverter_efficiency_pct: float
-    global_horizontal_irradiance: float # W/m2
+    global_horizontal_irradiance: float # W/m2 (Pyranometer)
     grid_export_power_mw: float
-    ambient_temp_c: Optional[float] = 25.0
-    wind_speed_ms: Optional[float] = 3.5
+    ambient_temp_c: Optional[float] = 28.0
+    cell_temp_c: Optional[float] = 45.0
+    wind_speed_ms: Optional[float] = 0.0
 
 class TelemetryIngestRequest(BaseModel):
     project_id: int

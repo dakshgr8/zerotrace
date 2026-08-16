@@ -13,7 +13,7 @@ export interface Project {
   id: number;
   project_code: string;
   name: string;
-  project_type: 'SOLAR' | 'WIND' | 'HYDRO' | 'BIOMASS';
+  project_type: 'SOLAR' | 'SOLAR_UTILITY' | 'SOLAR_ROOFTOP' | 'FLOATING_SOLAR';
   location: string;
   latitude: number;
   longitude: number;
@@ -74,9 +74,10 @@ export interface TelemetryDataPoint {
   timestamp: string;
   scada_active_power_mw: number;
   inverter_efficiency_pct: number;
-  global_horizontal_irradiance: number;
+  global_horizontal_irradiance: number; // W/m2 (Pyranometer)
   grid_export_power_mw: number;
   ambient_temp_c?: number;
+  cell_temp_c?: number;
   wind_speed_ms?: number;
 }
 

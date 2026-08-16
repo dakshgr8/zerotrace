@@ -30,7 +30,7 @@ export const WalkthroughGuide: React.FC<WalkthroughGuideProps> = ({ activeTab, s
       accountIndex: 0, // Tata Power Corporate
       icon: Leaf,
       color: 'emerald',
-      description: 'Upload solar/wind generation data. Instant AI check verifies no false reporting or nighttime solar claims.',
+      description: 'Upload solar PV generation telemetry. Instant AI check verifies pyranometer irradiance, diurnal models, and flags phantom nighttime claims.',
       actionLabel: 'Go to Producer Portal',
     },
     {

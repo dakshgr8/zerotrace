@@ -99,9 +99,29 @@ export class Web3Service {
       const provider = this.getProvider();
       const bal = await provider.getBalance(account);
       const ethVal = parseFloat(ethers.formatEther(bal));
+      
+      const lower = account.toLowerCase();
+      // Role 1: Tata Power (Energy Producer) - Revenue Account
+      if (lower === DEMO_ACCOUNTS[0].address.toLowerCase()) {
+        const delta = (ethVal - 10000) * INR_PER_ETH;
+        return Math.max(0, Math.round(1500000 + delta));
+      }
+      // Role 2: Bureau Veritas (Independent Auditor) - Gas & Audit Stipend
+      else if (lower === DEMO_ACCOUNTS[1].address.toLowerCase()) {
+        const delta = (ethVal - 10000) * INR_PER_ETH;
+        return Math.max(0, Math.round(250000 + delta));
+      }
+      // Role 3: Corporate ESG Buyer - Procurement & Offset Treasury
+      else if (lower === DEMO_ACCOUNTS[2].address.toLowerCase()) {
+        const delta = (ethVal - 10000) * INR_PER_ETH;
+        return Math.max(0, Math.round(5000000 + delta));
+      }
       return Math.round(ethVal * INR_PER_ETH);
     } catch (e) {
-      return 500000;
+      const lower = account.toLowerCase();
+      if (lower === DEMO_ACCOUNTS[1].address.toLowerCase()) return 250000;
+      if (lower === DEMO_ACCOUNTS[2].address.toLowerCase()) return 5000000;
+      return 1500000;
     }
   }
 
@@ -124,7 +144,10 @@ export class Web3Service {
   ): Promise<{ txHash: string; blockNumber: number }> {
     const signer = await this.getSigner(signerKey);
     const contract = this.getCarbonTokenContract(signer);
-    const amountWei = ethers.parseEther(amountZTC.toString());
+    
+    // Format float number cleanly to avoid JS floating-point precision artifacts
+    const amountStr = typeof amountZTC === 'number' ? amountZTC.toFixed(4).replace(/\.?0+$/, '') : String(amountZTC);
+    const amountWei = ethers.parseEther(amountStr);
 
     const tx = await contract.mintWithVerification(corporateWallet, amountWei, claimDigest, signature);
     const receipt = await tx.wait();

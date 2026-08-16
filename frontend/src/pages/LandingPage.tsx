@@ -39,7 +39,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectRole, onOpenLo
       icon: Leaf,
       iconBg: 'bg-indigo-50 text-indigo-600 border-indigo-100',
       btnClass: 'trust-btn-primary',
-      description: 'Submit solar/wind generation data, cross-check AI baseline models, and mint verified on-chain carbon credits.',
+      description: 'Submit solar PV generation telemetry, cross-check AI diurnal baseline models, and mint verified on-chain carbon credits.',
       badge: 'Role 1: Mint',
     },
     {
@@ -90,7 +90,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectRole, onOpenLo
         </h1>
 
         <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed max-w-2xl mx-auto">
-          ZeroTrace automatically evaluates solar and wind power output against grid substation meters with AI. 
+          ZeroTrace automatically evaluates utility & commercial solar PV power output against grid substation meters with AI. 
           Auditors approve in seconds, and enterprises settle directly in <strong>Indian Rupees (₹)</strong>.
         </p>
 

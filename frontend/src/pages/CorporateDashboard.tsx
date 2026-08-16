@@ -7,9 +7,8 @@ import { TelemetryComparisonChart } from '../components/Charts';
 import { CertificateModal } from '../components/CertificateModal';
 import { IPFSModal } from '../components/IPFSModal';
 import { 
-  Leaf, 
+  Sun, 
   UploadCloud, 
-  FileSpreadsheet,
   Coins, 
   Loader2, 
   Database, 
@@ -17,11 +16,10 @@ import {
   Zap, 
   Flame,
   Clock,
-  Download,
   CheckCircle2,
   Sparkles,
-  AlertTriangle,
-  ShieldCheck
+  ShieldCheck,
+  IndianRupee
 } from 'lucide-react';
 
 interface CorporateDashboardProps {
@@ -37,19 +35,16 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
   const [retirements, setRetirements] = useState<Retirement[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Submission Mode ('MANUAL' | 'CSV')
-  const [inputMode, setInputMode] = useState<'MANUAL' | 'CSV'>('MANUAL');
+  // Form Fields
   const [generationMWh, setGenerationMWh] = useState<string>('850');
   const [gridExportMWh, setGridExportMWh] = useState<string>('828');
   const [vintageYear, setVintageYear] = useState<number>(2026);
-  const [isAnomalyPreset, setIsAnomalyPreset] = useState<boolean>(false);
-  const [csvFile, setCsvFile] = useState<File | null>(null);
   const [ingesting, setIngesting] = useState<boolean>(false);
   const [mintingClaimId, setMintingClaimId] = useState<number | null>(null);
 
-  // Burn state
+  // Burn / Offset State
   const [burnAmount, setBurnAmount] = useState<string>('10');
-  const [beneficiary, setBeneficiary] = useState<string>('Tata Power Renewables');
+  const [beneficiary, setBeneficiary] = useState<string>('Tata Power Renewable Energy Ltd');
   const [isBurning, setIsBurning] = useState<boolean>(false);
 
   // Modals
@@ -83,72 +78,28 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
 
   const selectedProject = projects.find(p => p.id === selectedProjectId) || projects[0];
 
-  const loadHighConfidencePreset = () => {
-    setIsAnomalyPreset(false);
-    setGenerationMWh('850');
-    setGridExportMWh('828');
-    addNotification('info', 'Loaded High Confidence Preset', 'Clean generation with 98.4% grid export match.');
-  };
-
-  const loadLowConfidencePreset = () => {
-    setIsAnomalyPreset(true);
-    setGenerationMWh('1250');
-    setGridExportMWh('650');
-    addNotification('info', 'Loaded Low Confidence Preset', 'Simulates over-reporting + night solar generation anomalies.');
-  };
-
+  // 24-hour solar diurnal generation curve (sunrise ~6 AM, peak solar noon 12 PM, sunset ~6 PM)
   const computeTelemetryPoints = (): TelemetryDataPoint[] => {
     const now = new Date();
     const points: TelemetryDataPoint[] = [];
-    const totalGen = parseFloat(generationMWh) || 500;
+    const totalGen = parseFloat(generationMWh) || 850;
     const totalGrid = parseFloat(gridExportMWh) || totalGen * 0.975;
-    const isSolar = selectedProject?.project_type === 'SOLAR';
-
-    if (isAnomalyPreset) {
-      for (let h = 0; h < 24; h++) {
-        const timeStr = new Date(now.getTime() - (24 - h) * 3600 * 1000).toISOString();
-        const isDaytime = h >= 6 && h <= 18;
-        const ghi = isDaytime ? Math.max(0, 800 * (1 - Math.pow((h - 12) / 6, 2))) : 0;
-        
-        const nightPower = (h >= 1 && h <= 4) ? 35.0 : 0;
-        const daytimePower = ghi > 0 ? (ghi / 1000) * 240 : 0;
-        const scadaPower = daytimePower + nightPower;
-        const gridExport = isDaytime ? (ghi / 1000) * 140 : 0;
-
-        points.push({
-          timestamp: timeStr,
-          scada_active_power_mw: parseFloat(scadaPower.toFixed(2)),
-          inverter_efficiency_pct: 106.5,
-          global_horizontal_irradiance: parseFloat(ghi.toFixed(1)),
-          grid_export_power_mw: parseFloat(gridExport.toFixed(2)),
-          ambient_temp_c: 32.0,
-          wind_speed_ms: 3.5,
-        });
-      }
-      return points;
-    }
 
     let dayFactorSum = 0;
     const hourlyFactors: number[] = [];
 
     for (let h = 0; h < 24; h++) {
-      if (isSolar) {
-        const factor = h >= 6 && h <= 18 ? Math.max(0, Math.sin(((h - 6) / 12) * Math.PI)) : 0;
-        hourlyFactors.push(factor);
-        dayFactorSum += factor;
-      } else {
-        const factor = 1.0 + 0.3 * Math.sin(h / 3);
-        hourlyFactors.push(factor);
-        dayFactorSum += factor;
-      }
+      const factor = h >= 6 && h <= 18 ? Math.max(0, Math.sin(((h - 6) / 12) * Math.PI)) : 0;
+      hourlyFactors.push(factor);
+      dayFactorSum += factor;
     }
 
     for (let h = 0; h < 24; h++) {
       const timeStr = new Date(now.getTime() - (24 - h) * 3600 * 1000).toISOString();
-      const fraction = dayFactorSum > 0 ? hourlyFactors[h] / dayFactorSum : 1 / 24;
+      const fraction = dayFactorSum > 0 ? hourlyFactors[h] / dayFactorSum : 0;
       const hourlyGen = totalGen * fraction;
       const hourlyGrid = totalGrid * fraction;
-      const ghi = isSolar && h >= 6 && h <= 18 ? hourlyFactors[h] * 950 : 0;
+      const ghi = h >= 6 && h <= 18 ? hourlyFactors[h] * 950 : 0;
 
       points.push({
         timestamp: timeStr,
@@ -157,7 +108,8 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
         global_horizontal_irradiance: parseFloat(ghi.toFixed(1)),
         grid_export_power_mw: parseFloat(hourlyGrid.toFixed(2)),
         ambient_temp_c: 30.0,
-        wind_speed_ms: 3.5,
+        cell_temp_c: 45.0,
+        wind_speed_ms: 0.0,
       });
     }
     return points;
@@ -166,30 +118,23 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
   const handleIngestTelemetry = async () => {
     try {
       setIngesting(true);
+      const points = computeTelemetryPoints();
+      const satelliteAvg = 440.0;
 
-      if (inputMode === 'CSV' && csvFile) {
-        await api.uploadCSV(selectedProjectId, walletAddress, csvFile, vintageYear);
-      } else {
-        const points = computeTelemetryPoints();
-        const satelliteAvg = isAnomalyPreset ? 300.0 : (selectedProject?.project_type === 'SOLAR' ? 440.0 : undefined);
-
-        await api.ingestTelemetry({
-          project_id: selectedProjectId,
-          corporate_wallet: walletAddress,
-          period_start: points[0].timestamp,
-          period_end: points[points.length - 1].timestamp,
-          vintage_year: vintageYear,
-          data_points: points,
-          satellite_irradiance_avg: satelliteAvg,
-        });
-      }
+      await api.ingestTelemetry({
+        project_id: selectedProjectId,
+        corporate_wallet: walletAddress,
+        period_start: points[0].timestamp,
+        period_end: points[points.length - 1].timestamp,
+        vintage_year: vintageYear,
+        data_points: points,
+        satellite_irradiance_avg: satelliteAvg,
+      });
 
       addNotification(
-        isAnomalyPreset ? 'error' : 'success',
-        isAnomalyPreset ? 'Flagged Batch Submitted' : 'Clean Batch Submitted',
-        isAnomalyPreset 
-          ? 'Anomalous batch created. Switch to Auditor Hub to see AI fraud detection.'
-          : 'Clean batch created. Switch to Auditor Hub to see AI high-confidence verification.'
+        'success',
+        'Generation Submitted',
+        'Solar generation telemetry dispatched to Auditor queue for verification.'
       );
 
       await loadData();
@@ -208,7 +153,7 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
 
     try {
       setMintingClaimId(claim.id);
-      addNotification('info', 'Minting Credits', 'Minting carbon tokens to your wallet on-chain...');
+      addNotification('info', 'Minting Credits', 'Minting verified carbon tokens to your wallet on-chain...');
 
       const result = await web3Service.mintWithVerification(
         claim.corporate_wallet,
@@ -245,7 +190,7 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
       const result = await web3Service.burnForOffset(
         amountNum,
         beneficiary,
-        'Clean Energy Offset',
+        'Clean Solar Energy Offset',
         activeAccount.privateKey
       );
 
@@ -253,7 +198,7 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
         certificate_id: result.certificateId,
         burner_wallet: walletAddress,
         corporate_beneficiary: beneficiary,
-        reason: 'Clean Energy Offset',
+        reason: 'Clean Solar Energy Offset',
         amount_tonnes: amountNum,
         tx_hash: result.txHash,
         block_number: result.blockNumber,
@@ -261,7 +206,7 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
 
       await refreshBalances();
       await loadData();
-      addNotification('success', 'Neutralized!', `Retired ${amountNum} ZTC. Certificate generated!`);
+      addNotification('success', 'Offset Neutralized!', `Retired ${amountNum} ZTC. Certificate generated!`);
       setSelectedRetirement(ret);
     } catch (err: any) {
       addNotification('error', 'Retirement Failed', err.reason || err.message || 'Failed to retire');
@@ -270,28 +215,16 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
     }
   };
 
-  const downloadSampleCsv = () => {
-    const points = computeTelemetryPoints();
-    const headers = "timestamp,scada_active_power_mw,grid_export_power_mw,global_horizontal_irradiance,inverter_efficiency_pct\n";
-    const rows = points.map(p => `${p.timestamp},${p.scada_active_power_mw},${p.grid_export_power_mw},${p.global_horizontal_irradiance},${p.inverter_efficiency_pct}`).join("\n");
-    const blob = new Blob([headers + rows], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('href', url);
-    a.setAttribute('download', `sample_telemetry_${selectedProject?.project_code || 'plant'}.csv`);
-    a.click();
-  };
-
   const previewPoints = computeTelemetryPoints();
 
   return (
     <div className="space-y-10 animate-fade-in max-w-5xl mx-auto">
       
-      {/* 2 Clean Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      {/* 3 Summary Metric Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div className="trust-card p-6 flex items-center justify-between">
           <div>
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Available Carbon Credits</span>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Available Credits</span>
             <div className="mt-1 flex items-baseline space-x-2">
               <span className="font-display font-extrabold text-3xl text-indigo-600 font-mono">{ztcBalance}</span>
               <span className="text-xs font-bold text-slate-900">ZTC</span>
@@ -305,14 +238,27 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
 
         <div className="trust-card p-6 flex items-center justify-between">
           <div>
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Verified Clean Energy</span>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Corporate Treasury</span>
+            <div className="mt-1 flex items-baseline space-x-1">
+              <span className="font-display font-extrabold text-2xl text-slate-900 font-mono">{inrBalance}</span>
+            </div>
+            <p className="text-[11px] text-slate-400 mt-0.5">Operational Settlement Balance</p>
+          </div>
+          <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-700 shadow-sm">
+            <IndianRupee className="w-6 h-6" />
+          </div>
+        </div>
+
+        <div className="trust-card p-6 flex items-center justify-between">
+          <div>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Verified Generation</span>
             <div className="mt-1 flex items-baseline space-x-2">
               <span className="font-display font-extrabold text-3xl text-emerald-600 font-mono">
                 {claims.reduce((acc, c) => acc + (c.status === 'MINTED' || c.status === 'APPROVED' ? c.validated_mwh : 0), 0).toFixed(1)}
               </span>
               <span className="text-xs font-bold text-slate-900">MWh</span>
             </div>
-            <p className="text-[11px] text-slate-400 mt-0.5">Grid Substation Verified</p>
+            <p className="text-[11px] text-slate-400 mt-0.5">Substation Meter Verified</p>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm">
             <Zap className="w-6 h-6" />
@@ -328,87 +274,15 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
               <UploadCloud className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-display font-extrabold text-base text-slate-900">Step 1: Submit Clean Energy Generation</h2>
-              <p className="text-xs text-slate-500">Enter plant output or choose a 1-click presentation demo preset</p>
+              <h2 className="font-display font-extrabold text-base text-slate-900">Step 1: Submit Solar PV Generation</h2>
+              <p className="text-xs text-slate-500">Record plant inverter output and grid substation meter reading</p>
             </div>
-          </div>
-
-          {/* Mode Switcher */}
-          <div className="flex items-center space-x-1.5 p-1 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold">
-            <button
-              type="button"
-              onClick={() => setInputMode('MANUAL')}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
-                inputMode === 'MANUAL' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200/60' : 'text-slate-500 hover:text-slate-900'
-              }`}
-            >
-              Manual Entry
-            </button>
-            <button
-              type="button"
-              onClick={() => setInputMode('CSV')}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
-                inputMode === 'CSV' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200/60' : 'text-slate-500 hover:text-slate-900'
-              }`}
-            >
-              Upload CSV
-            </button>
-          </div>
-        </div>
-
-        {/* Presentation Demo Quick Presets */}
-        <div className="p-4 bg-slate-50/80 border border-slate-200/80 rounded-2xl space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center space-x-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Presentation Demo Presets (1-Click Fill)</span>
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={loadHighConfidencePreset}
-              className={`p-3.5 rounded-xl text-left text-xs transition border flex items-center justify-between ${
-                !isAnomalyPreset
-                  ? 'bg-emerald-50/80 border-emerald-300 text-emerald-900 font-bold shadow-sm'
-                  : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              <div className="flex items-center space-x-2.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <div>
-                  <p className="font-bold">🟢 High AI Confidence Preset</p>
-                  <p className="text-[10px] text-slate-500 font-normal">850 MWh &bull; Clean Grid Export Match (98.4%)</p>
-                </div>
-              </div>
-              <span className="trust-badge-emerald px-2 py-0.5 text-[9px]">Safe</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={loadLowConfidencePreset}
-              className={`p-3.5 rounded-xl text-left text-xs transition border flex items-center justify-between ${
-                isAnomalyPreset
-                  ? 'bg-rose-50/80 border-rose-300 text-rose-900 font-bold shadow-sm'
-                  : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              <div className="flex items-center space-x-2.5">
-                <AlertTriangle className="w-4 h-4 text-rose-600" />
-                <div>
-                  <p className="font-bold">🔴 Low AI Confidence Preset</p>
-                  <p className="text-[10px] text-slate-500 font-normal">1,250 MWh &bull; Night Solar + 50% Grid Mismatch</p>
-                </div>
-              </div>
-              <span className="trust-badge-rose px-2 py-0.5 text-[9px]">Fraud Flag</span>
-            </button>
           </div>
         </div>
 
         {/* Plant Selector */}
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-2">Select Generation Asset</label>
+          <label className="text-xs font-bold text-slate-700 block mb-2">Select Solar Asset</label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {projects.map((p) => (
               <button
@@ -417,97 +291,72 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
                 onClick={() => setSelectedProjectId(p.id)}
                 className={`p-3.5 rounded-xl text-left text-xs transition-all border ${
                   selectedProjectId === p.id
-                    ? 'bg-indigo-50/80 border-indigo-300 text-indigo-900 font-bold shadow-sm'
+                    ? 'bg-amber-50/80 border-amber-300 text-amber-900 font-bold shadow-sm'
                     : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                 }`}
               >
-                <p className="font-bold truncate">{p.name.split('(')[0]}</p>
-                <p className="text-[10px] text-slate-500 font-mono mt-0.5">{p.peak_capacity_mw} MW &bull; {p.project_type}</p>
+                <div className="flex items-center space-x-2">
+                  <Sun className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                  <p className="font-bold truncate">{p.name.split('(')[0]}</p>
+                </div>
+                <p className="text-[10px] text-slate-500 font-mono mt-1">{p.peak_capacity_mw} MW &bull; {p.location.split(',')[0]}</p>
               </button>
             ))}
           </div>
         </div>
 
         {/* Input Fields */}
-        {inputMode === 'MANUAL' ? (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">Active Output (MWh)</label>
-              <input
-                type="number"
-                step="10"
-                value={generationMWh}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setGenerationMWh(val);
-                  const num = parseFloat(val);
-                  if (!isNaN(num) && !isAnomalyPreset) {
-                    setGridExportMWh((num * 0.975).toFixed(1));
-                  }
-                }}
-                className="w-full trust-input font-mono"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">Grid Export Meter (MWh)</label>
-              <input
-                type="number"
-                step="10"
-                value={gridExportMWh}
-                onChange={(e) => setGridExportMWh(e.target.value)}
-                className="w-full trust-input font-mono"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">Vintage Year</label>
-              <input
-                type="number"
-                value={vintageYear}
-                onChange={(e) => setVintageYear(parseInt(e.target.value) || 2026)}
-                className="w-full trust-input font-mono"
-                required
-              />
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label className="text-xs font-bold text-slate-700 block mb-1">Active Output (MWh)</label>
+            <input
+              type="number"
+              step="10"
+              value={generationMWh}
+              onChange={(e) => {
+                const val = e.target.value;
+                setGenerationMWh(val);
+                const num = parseFloat(val);
+                if (!isNaN(num)) {
+                  setGridExportMWh((num * 0.975).toFixed(1));
+                }
+              }}
+              className="w-full trust-input font-mono"
+              required
+            />
           </div>
-        ) : (
-          <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-4 text-center">
-            <FileSpreadsheet className="w-10 h-10 text-indigo-600 mx-auto" />
-            <div>
-              <p className="text-xs font-bold text-slate-900">Upload SCADA Telemetry File (.csv)</p>
-              <p className="text-[11px] text-slate-500">Columns: timestamp, scada_active_power_mw, grid_export_power_mw</p>
-            </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <input
-                type="file"
-                accept=".csv"
-                onChange={(e) => setCsvFile(e.target.files ? e.target.files[0] : null)}
-                className="text-xs text-slate-600 file:trust-btn-secondary file:mr-3 file:py-1.5 file:px-3 file:text-xs file:font-bold file:text-indigo-600"
-              />
-
-              <button
-                type="button"
-                onClick={downloadSampleCsv}
-                className="trust-btn-secondary px-3 py-1.5 text-xs text-slate-700 flex items-center space-x-1"
-              >
-                <Download className="w-3.5 h-3.5 text-indigo-600" />
-                <span>Download Sample CSV</span>
-              </button>
-            </div>
+          <div>
+            <label className="text-xs font-bold text-slate-700 block mb-1">Grid Export Meter (MWh)</label>
+            <input
+              type="number"
+              step="10"
+              value={gridExportMWh}
+              onChange={(e) => setGridExportMWh(e.target.value)}
+              className="w-full trust-input font-mono"
+              required
+            />
           </div>
-        )}
 
-        {/* Live Curve Preview */}
+          <div>
+            <label className="text-xs font-bold text-slate-700 block mb-1">Vintage Year</label>
+            <input
+              type="number"
+              value={vintageYear}
+              onChange={(e) => setVintageYear(parseInt(e.target.value) || 2026)}
+              className="w-full trust-input font-mono"
+              required
+            />
+          </div>
+        </div>
+
+        {/* Live Diurnal Solar Curve Preview */}
         <div>
           <div className="flex justify-between items-center mb-2">
             <span className="text-xs font-bold text-slate-700">
-              24-Hour Telemetry Distribution (Live Preview)
+              24-Hour Diurnal Solar Distribution (Live Model Preview)
             </span>
-            <span className="text-[10px] font-mono text-slate-400">Indigo: Plant | Emerald: Grid Meter</span>
+            <span className="text-[10px] font-mono text-slate-400">Indigo: Plant Inverters | Emerald: Substation Meter</span>
           </div>
           <TelemetryComparisonChart dataPoints={previewPoints} height={180} />
         </div>
@@ -573,7 +422,7 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
                     <button
                       onClick={() => handleMintClaim(claim)}
                       disabled={mintingClaimId === claim.id}
-                      className="trust-btn-primary px-5 py-2 text-xs flex items-center space-x-1.5"
+                      className="trust-btn-primary px-5 py-2 text-xs flex items-center space-x-1.5 shadow-sm"
                     >
                       <ArrowUpRight className="w-3.5 h-3.5" />
                       <span>Mint Tokens to Wallet</span>
@@ -621,7 +470,7 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
             <input
               type="number"
               min="1"
-              max={ztcBalance}
+              max={parseFloat(ztcBalance) || 1000}
               value={burnAmount}
               onChange={(e) => setBurnAmount(e.target.value)}
               className="w-full trust-input font-mono"

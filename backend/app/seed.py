@@ -40,7 +40,7 @@ def seed_database():
     db.commit()
     db.refresh(corporate_user)
 
-    # 2. Register Clean Renewable Energy Generation Assets
+    # 2. Register Clean Renewable Energy Generation Assets (100% Solar PV Assets)
     project1 = models.Project(
         project_code="PRJ-SOLAR-BHADLA-01",
         name="Bhadla Solar Phase IV (500 MW)",
@@ -57,15 +57,15 @@ def seed_database():
     db.add(project1)
 
     project2 = models.Project(
-        project_code="PRJ-WIND-KUTCH-02",
-        name="Kutch Coastal Wind Array (250 MW)",
-        project_type=models.ProjectType.WIND,
-        location="Mandvi, Kutch, Gujarat, India",
-        latitude=23.2420,
-        longitude=69.6669,
+        project_code="PRJ-SOLAR-REWA-02",
+        name="Rewa Ultra Mega Solar Park (250 MW)",
+        project_type=models.ProjectType.SOLAR,
+        location="Gurh, Rewa, Madhya Pradesh, India",
+        latitude=24.4842,
+        longitude=81.3039,
         peak_capacity_mw=250.0,
-        baseline_cuf=0.320,
-        grid_emission_factor=0.765,
+        baseline_cuf=0.228,
+        grid_emission_factor=0.742,
         methodology_hash="0x9c34a2e56b829c3a6bc891f165a882a1728bb84128f117c37b30a5da4c643b2f",
         owner_id=corporate_user.id
     )

@@ -16,7 +16,7 @@
 ```mermaid
 flowchart TD
     subgraph Data_Sources ["1. Multi-Source Ingestion"]
-        SCADA["Solar / Wind SCADA Telemetry<br/>(Hourly Active MW, Irradiance, Efficiency)"]
+        SCADA["Solar PV SCADA Telemetry<br/>(Hourly Active MW, Irradiance, Efficiency)"]
         GRID["Bidirectional Grid Export Meter<br/>(Substation Net Injected MWh)"]
         SAT["Copernicus / NASA POWER Satellites<br/>(Surface Irradiance & Coordinates)"]
         CEA["CEA / MNRE Regional Baselines<br/>(Grid Emission & CUF Benchmarks)"]
@@ -87,7 +87,7 @@ flowchart TD
 
 ### 3. Persistence & Relational Schema (SQLAlchemy)
 - `users`: Corporate entities, verifiers, and governance administrators.
-- `projects`: Renewable generation assets (Bhadla Solar, Kutch Wind, Pavagada Solar).
+- `projects`: Renewable solar generation assets (Bhadla Solar, Rewa Solar, Pavagada Solar).
 - `telemetry_batches`: Ingested multi-source sensor frames and ingestion hashes.
 - `claims`: Telemetry verification records, validated MWh, risk scores, IPFS CIDs, and Oracle signatures.
 - `retirements`: Permanent on-chain carbon offset retirement certificates.

@@ -13,7 +13,7 @@ import {
   CheckCircle2, 
   AlertTriangle, 
   Sun, 
-  Wind, 
+  Zap, 
   Flame, 
   Award,
   Globe,
@@ -146,10 +146,8 @@ export const Explorer: React.FC = () => {
               >
                 <div className="space-y-4">
                   <div className="flex items-start justify-between">
-                    <div className={`w-11 h-11 rounded-2xl flex items-center justify-center ${
-                      isSolar ? 'bg-amber-50 text-amber-600 border border-amber-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'
-                    }`}>
-                      {isSolar ? <Sun className="w-5 h-5" /> : <Wind className="w-5 h-5" />}
+                    <div className="w-11 h-11 rounded-2xl flex items-center justify-center bg-amber-50 text-amber-600 border border-amber-100">
+                      <Sun className="w-5 h-5" />
                     </div>
                     <span className="trust-badge-emerald px-2.5 py-0.5 text-[10px]">
                       Verified Asset

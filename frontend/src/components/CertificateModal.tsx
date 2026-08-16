@@ -112,7 +112,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({ retirement, 
               </span>
               <div className="text-left">
                 <span className="text-sm font-bold text-slate-800 block">Metric Tons CO₂</span>
-                <span className="text-[10px] text-slate-500">Neutralized via Solar/Wind Generation</span>
+                <span className="text-[10px] text-slate-500">Neutralized via Verified Solar PV Generation</span>
               </div>
             </div>
           </div>

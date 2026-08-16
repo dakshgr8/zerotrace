@@ -24,11 +24,36 @@ class Settings(BaseModel):
     EVM_RPC_URL: str = os.getenv("EVM_RPC_URL", "http://127.0.0.1:8545")
     CHAIN_ID: int = int(os.getenv("CHAIN_ID", "31337"))
     
-    # Carbon Token & Marketplace Contracts
+    # Carbon Token & Marketplace Contracts (Auto-detected from deployment artifacts if not specified in env)
     CARBON_TOKEN_ADDRESS: str = os.getenv("CARBON_TOKEN_ADDRESS", "")
     MARKETPLACE_ADDRESS: str = os.getenv("MARKETPLACE_ADDRESS", "")
     
     # Standard Grid Emission Baseline Factors (CEA India Default: ~0.716 tCO2/MWh)
     DEFAULT_GRID_EMISSION_FACTOR: float = 0.716
 
-settings = Settings()
+def _resolve_settings() -> Settings:
+    s = Settings()
+    if not s.CARBON_TOKEN_ADDRESS or not s.MARKETPLACE_ADDRESS:
+        import json
+        # Try finding deployed contract addresses
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        candidate_paths = [
+            os.path.abspath(os.path.join(current_dir, "..", "..", "contracts", "deployments.json")),
+            os.path.abspath(os.path.join(current_dir, "..", "..", "frontend", "src", "contracts", "deployedAddresses.json")),
+        ]
+        for path in candidate_paths:
+            if os.path.exists(path):
+                try:
+                    with open(path, "r") as f:
+                        data = json.load(f)
+                        contracts = data.get("contracts", {})
+                        if not s.CARBON_TOKEN_ADDRESS and "CarbonCreditToken" in contracts:
+                            s.CARBON_TOKEN_ADDRESS = contracts["CarbonCreditToken"]["address"]
+                        if not s.MARKETPLACE_ADDRESS and "CarbonMarketplace" in contracts:
+                            s.MARKETPLACE_ADDRESS = contracts["CarbonMarketplace"]["address"]
+                        break
+                except Exception as e:
+                    pass
+    return s
+
+settings = _resolve_settings()

@@ -160,8 +160,9 @@ async def upload_telemetry_csv(
                 inverter_efficiency_pct=float(row["inverter_efficiency_pct"]),
                 global_horizontal_irradiance=float(row["global_horizontal_irradiance"]),
                 grid_export_power_mw=float(row["grid_export_power_mw"]),
-                ambient_temp_c=float(row.get("ambient_temp_c", 25.0)),
-                wind_speed_ms=float(row.get("wind_speed_ms", 3.0))
+                ambient_temp_c=float(row.get("ambient_temp_c", 28.0)),
+                cell_temp_c=float(row.get("cell_temp_c", 45.0)),
+                wind_speed_ms=float(row.get("wind_speed_ms", 0.0))
             )
         )
 

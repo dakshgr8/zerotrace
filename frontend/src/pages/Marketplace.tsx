@@ -12,7 +12,9 @@ import {
   Search, 
   Loader2, 
   Sun, 
-  Wind,
+  Zap,
+  Sparkles,
+  Layers,
   Trash2
 } from 'lucide-react';
 
@@ -166,8 +168,9 @@ export const Marketplace: React.FC = () => {
 
     const matchesCategory =
       selectedCategory === 'ALL' ||
-      (selectedCategory === 'SOLAR' && l.project_type.toLowerCase().includes('solar')) ||
-      (selectedCategory === 'WIND' && l.project_type.toLowerCase().includes('wind'));
+      (selectedCategory === 'UTILITY' && (l.project_type.toLowerCase().includes('utility') || l.project_type.toLowerCase().includes('park') || (l.project_name && (l.project_name.toLowerCase().includes('bhadla') || l.project_name.toLowerCase().includes('rewa') || l.project_name.toLowerCase().includes('pavagada'))))) ||
+      (selectedCategory === 'ROOFTOP' && (l.project_type.toLowerCase().includes('rooftop') || l.project_type.toLowerCase().includes('commercial'))) ||
+      (selectedCategory === 'FLOATING' && (l.project_type.toLowerCase().includes('floating') || (l.project_name && l.project_name.toLowerCase().includes('floating'))));
 
     return matchesSearch && matchesCategory;
   });
@@ -179,13 +182,13 @@ export const Marketplace: React.FC = () => {
       <div className="trust-card p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
         <div>
           <div className="flex items-center space-x-3">
-            <div className="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm">
-              <Coins className="w-6 h-6" />
+            <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm">
+              <Sun className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="font-display font-extrabold text-xl text-slate-900">Decentralized Carbon Marketplace</h1>
+              <h1 className="font-display font-extrabold text-xl text-slate-900">Solar Carbon Credit Marketplace</h1>
               <p className="text-xs text-slate-500">
-                Peer-to-peer carbon credit trading with non-custodial smart contract escrow in Indian Rupees (₹)
+                Peer-to-peer verified solar credit trading with non-custodial smart contract escrow in Indian Rupees (₹)
               </p>
             </div>
           </div>
@@ -196,7 +199,7 @@ export const Marketplace: React.FC = () => {
           className="trust-btn-primary px-6 py-3 text-xs flex items-center space-x-2 whitespace-nowrap shadow-primary-btn"
         >
           <PlusCircle className="w-4 h-4" />
-          <span>List Credits for Sale</span>
+          <span>List Solar Credits for Sale</span>
         </button>
       </div>
 
@@ -208,7 +211,7 @@ export const Marketplace: React.FC = () => {
           <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
           <input
             type="text"
-            placeholder="Search solar, wind, or asset name..."
+            placeholder="Search solar park, project, or vintage..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full trust-input pl-10 text-xs"
@@ -216,32 +219,41 @@ export const Marketplace: React.FC = () => {
         </div>
 
         {/* Category Pills */}
-        <div className="flex items-center space-x-1.5 p-1 bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold w-full sm:w-auto justify-center">
+        <div className="flex items-center space-x-1.5 p-1 bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold w-full sm:w-auto justify-center overflow-x-auto">
           <button
             onClick={() => setSelectedCategory('ALL')}
-            className={`px-4 py-2 rounded-lg transition-all ${
+            className={`px-3 py-1.5 rounded-lg transition-all ${
               selectedCategory === 'ALL' ? 'bg-white text-indigo-600 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            All Listings
+            All Solar Credits
           </button>
           <button
-            onClick={() => setSelectedCategory('SOLAR')}
-            className={`px-4 py-2 rounded-lg transition-all flex items-center space-x-1.5 ${
-              selectedCategory === 'SOLAR' ? 'bg-white text-amber-600 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
+            onClick={() => setSelectedCategory('UTILITY')}
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
+              selectedCategory === 'UTILITY' ? 'bg-white text-amber-600 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <Sun className="w-3.5 h-3.5" />
-            <span>Solar</span>
+            <Sun className="w-3.5 h-3.5 text-amber-500" />
+            <span>Mega Solar Parks</span>
           </button>
           <button
-            onClick={() => setSelectedCategory('WIND')}
-            className={`px-4 py-2 rounded-lg transition-all flex items-center space-x-1.5 ${
-              selectedCategory === 'WIND' ? 'bg-white text-emerald-600 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
+            onClick={() => setSelectedCategory('ROOFTOP')}
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
+              selectedCategory === 'ROOFTOP' ? 'bg-white text-indigo-600 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <Wind className="w-3.5 h-3.5" />
-            <span>Wind</span>
+            <Zap className="w-3.5 h-3.5 text-indigo-500" />
+            <span>C&I Rooftop Solar</span>
+          </button>
+          <button
+            onClick={() => setSelectedCategory('FLOATING')}
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
+              selectedCategory === 'FLOATING' ? 'bg-white text-emerald-600 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
+            <span>Floating Solar</span>
           </button>
         </div>
 
@@ -251,13 +263,13 @@ export const Marketplace: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredListings.length === 0 ? (
           <div className="col-span-full trust-card p-16 text-center text-slate-500 text-xs">
-            <Coins className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <p className="font-bold text-slate-900">No Active Listings in Escrow</p>
-            <p className="text-[11px] mt-1">Energy producers can list carbon credits using the button above.</p>
+            <Sun className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+            <p className="font-bold text-slate-900">No Active Solar Listings in Escrow</p>
+            <p className="text-[11px] mt-1">Solar plant operators can list carbon credits using the button above.</p>
           </div>
         ) : (
           filteredListings.map((item) => {
-            const isSolar = item.project_type.toLowerCase().includes('solar');
+            const isFloating = item.project_type.toLowerCase().includes('floating');
             const isMyListing = item.seller_wallet.toLowerCase() === walletAddress.toLowerCase();
             const unitPrice = item.unit_price_inr || 1250;
 
@@ -270,9 +282,9 @@ export const Marketplace: React.FC = () => {
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                        isSolar ? 'bg-amber-50 text-amber-600 border border-amber-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                        isFloating ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100'
                       }`}>
-                        {isSolar ? <Sun className="w-5 h-5" /> : <Wind className="w-5 h-5" />}
+                        <Sun className="w-5 h-5" />
                       </div>
                       <div>
                         <h3 className="font-display font-bold text-sm text-slate-900">{item.project_name || item.project_type}</h3>

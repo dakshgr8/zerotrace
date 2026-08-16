@@ -9,7 +9,8 @@ import {
   ShoppingCart, 
   Flame, 
   Sun, 
-  Wind, 
+  Zap,
+  Sparkles, 
   Loader2, 
   X,
   IndianRupee,
@@ -183,10 +184,8 @@ export const BuyerDashboard: React.FC = () => {
                 >
                   <div>
                     <div className="flex items-center space-x-2.5">
-                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
-                        isSolar ? 'bg-amber-50 text-amber-600 border border-amber-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'
-                      }`}>
-                        {isSolar ? <Sun className="w-4 h-4" /> : <Wind className="w-4 h-4" />}
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-amber-50 text-amber-600 border border-amber-100">
+                        <Sun className="w-4 h-4" />
                       </div>
                       <div>
                         <h3 className="font-display font-bold text-xs text-slate-900">{item.project_name || item.project_type}</h3>
