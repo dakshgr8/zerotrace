@@ -4,6 +4,7 @@ Signs authorized mint claims with EIP-712 Typed Data standards using the Oracle'
 """
 
 from typing import Dict, Any, Tuple
+from decimal import Decimal
 from eth_account import Account
 from eth_account.messages import encode_typed_data, encode_defunct
 from web3 import Web3
@@ -35,8 +36,9 @@ class CryptographicOracle:
         contract_addr = verifying_contract or self.verifying_contract
         cid = chain_id or self.chain_id
 
-        # Convert float ZTC credits to 18-decimal uint256 integer
-        amount_wei = int(round(amount_ztc * 10**18))
+        # Convert float ZTC credits to 18-decimal uint256 integer using Decimal to avoid float precision artifacts
+        amount_str = f"{amount_ztc:.4f}".rstrip("0").rstrip(".") if isinstance(amount_ztc, float) else str(amount_ztc)
+        amount_wei = int(Decimal(amount_str) * Decimal(10**18))
         claim_digest_bytes32 = bytes.fromhex(claim_digest[2:] if claim_digest.startswith("0x") else claim_digest)
 
         # Build EIP-712 structured data dict
