@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight text-slate-900 font-bold;
+  }
+}
+
+@layer components {
+  /* Corporate Trust Card */
+  .trust-card {
+    @apply bg-white rounded-2xl border border-slate-200/80 transition-all duration-200;
+    box-shadow: 0 4px 20px -2px rgba(79, 70, 229, 0.08);
+  }
+
+  .trust-card-hover {
+    @apply bg-white rounded-2xl border border-slate-200/80 transition-all duration-200 hover:-translate-y-1 hover:border-indigo-300/60;
+    box-shadow: 0 4px 20px -2px rgba(79, 70, 229, 0.08);
+  }
+  .trust-card-hover:hover {
+    box-shadow: 0 12px 28px -5px rgba(79, 70, 229, 0.15), 0 8px 10px -6px rgba(79, 70, 229, 0.08);
+  }
+
+  .trust-card-sm {
+    @apply bg-white rounded-xl border border-slate-200/70 shadow-sm transition-all duration-200;
+  }
+
+  /* Corporate Trust Buttons */
+  .trust-btn-primary {
+    @apply bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold rounded-xl hover:-translate-y-0.5 active:translate-y-0 active:shadow-md transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none;
+    box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.35);
+  }
+  .trust-btn-primary:hover {
+    box-shadow: 0 6px 20px 0 rgba(79, 70, 229, 0.45);
+  }
+
+  .trust-btn-secondary {
+    @apply bg-white border border-slate-200 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900 active:bg-slate-100 transition-all duration-200 disabled:opacity-50;
+  }
+
+  .trust-btn-emerald {
+    @apply bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold rounded-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-50;
+    box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.35);
+  }
+  .trust-btn-emerald:hover {
+    box-shadow: 0 6px 20px 0 rgba(16, 185, 129, 0.45);
+  }
+
+  /* Form Inputs */
+  .trust-input {
+    @apply bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-150;
+  }
+
+  /* Inset Wells & Surfaces */
+  .trust-well {
+    @apply bg-slate-50/80 border border-slate-200/60 rounded-xl;
+  }
+
+  .trust-well-indigo {
+    @apply bg-indigo-50/60 border border-indigo-100 rounded-xl;
+  }
+
+  /* Badges */
+  .trust-badge-indigo {
+    @apply inline-flex items-center space-x-1 bg-indigo-50 text-indigo-700 border border-indigo-200/70 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+
+  .trust-badge-emerald {
+    @apply inline-flex items-center space-x-1 bg-emerald-50 text-emerald-700 border border-emerald-200/70 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+
+  .trust-badge-amber {
+    @apply inline-flex items-center space-x-1 bg-amber-50 text-amber-700 border border-amber-200/70 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+
+  .trust-badge-rose {
+    @apply inline-flex items-center space-x-1 bg-rose-50 text-rose-700 border border-rose-200/70 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+
+  /* Text Gradients */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 font-extrabold;
+  }
+
+  .gradient-emerald-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-600 font-extrabold;
+  }
+
+  /* Dark CTA Background */
+  .gradient-dark-section {
+    @apply bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white border border-indigo-900/50 shadow-2xl;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
