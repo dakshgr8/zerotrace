@@ -2,6 +2,7 @@ import React from 'react';
 import { useWeb3 } from '../context/Web3Context';
 import { DEMO_ACCOUNTS } from '../services/web3';
 import { 
+  Sun,
   Leaf, 
   ShieldCheck, 
   ShoppingCart, 
@@ -30,9 +31,9 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
       title: 'Energy Producer',
       name: DEMO_ACCOUNTS[0].name,
       description: 'Submit plant generation data, review physical baseline models, and mint carbon credits.',
-      icon: Leaf,
-      iconColor: 'text-indigo-600',
-      bgBadge: 'bg-indigo-50 border-indigo-100',
+      icon: Sun,
+      iconColor: 'text-amber-500',
+      bgBadge: 'bg-amber-50 border-amber-100',
       btnClass: 'trust-btn-primary',
     },
     {
