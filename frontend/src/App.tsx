@@ -111,11 +111,11 @@ const MainLayout: React.FC = () => {
           /* AUTHENTICATED PLATFORM STATE */
           <>
             {activeTab === 'corporate' && (
-              <CorporateDashboard onNavigateToAuditor={() => setActiveTab('verifier')} />
+              <CorporateDashboard />
             )}
 
             {activeTab === 'verifier' && (
-              <VerifierDashboard onNavigateToProducer={() => setActiveTab('corporate')} />
+              <VerifierDashboard />
             )}
 
             {activeTab === 'buyer' && (

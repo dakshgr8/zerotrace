@@ -18,12 +18,8 @@ import {
   Globe
 } from 'lucide-react';
 
-interface VerifierDashboardProps {
-  onNavigateToProducer?: () => void;
-}
-
-export const VerifierDashboard: React.FC<VerifierDashboardProps> = ({ onNavigateToProducer }) => {
-  const { walletAddress, addNotification, switchAccount } = useWeb3();
+export const VerifierDashboard: React.FC = () => {
+  const { walletAddress, addNotification } = useWeb3();
 
   const [pendingClaims, setPendingClaims] = useState<Claim[]>([]);
   const [selectedClaim, setSelectedClaim] = useState<Claim | null>(null);
@@ -117,7 +113,7 @@ export const VerifierDashboard: React.FC<VerifierDashboardProps> = ({ onNavigate
 
       {/* Success Notification */}
       {lastApprovedClaim && (
-        <div className="trust-card p-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-emerald-200 bg-emerald-50/50 animate-slide-up">
+        <div className="trust-card p-5 flex items-center justify-between gap-4 border-emerald-200 bg-emerald-50/50 animate-slide-up">
           <div className="flex items-center space-x-3">
             <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-700">
               <Check className="w-5 h-5 stroke-[3]" />
@@ -127,21 +123,10 @@ export const VerifierDashboard: React.FC<VerifierDashboardProps> = ({ onNavigate
                 Claim {lastApprovedClaim.claim_uid} Approved & Signed!
               </p>
               <p className="text-[11px] text-emerald-700">
-                {lastApprovedClaim.co2_offset_tonnes.toFixed(2)} ZTC carbon credits ready for producer to mint on-chain.
+                Authorized {lastApprovedClaim.co2_offset_tonnes.toFixed(2)} ZTC carbon credits with EIP-712 cryptographic signature.
               </p>
             </div>
           </div>
-
-          <button
-            onClick={() => {
-              switchAccount(0);
-              if (onNavigateToProducer) onNavigateToProducer();
-            }}
-            className="trust-btn-emerald px-5 py-2.5 text-xs flex items-center space-x-2 whitespace-nowrap"
-          >
-            <span>Switch to Producer & Mint Now</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
         </div>
       )}
 

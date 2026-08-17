@@ -143,18 +143,25 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onOpenL
           
           {isAuthenticated ? (
             <>
-              {/* Wallet Token Balances */}
-              <div className="hidden sm:flex items-center space-x-3 px-3.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono">
-                <div className="flex items-center space-x-1.5">
-                  <span className="text-slate-500 font-sans text-[11px]">Carbon:</span>
-                  <span className="font-bold text-emerald-600">{ztcBalance} ZTC</span>
+              {/* Role-Specific Status / Balances */}
+              {role === 'VERIFIER' ? (
+                <div className="hidden sm:flex items-center space-x-2 px-3.5 py-1.5 bg-emerald-50 border border-emerald-200/80 rounded-xl text-xs">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <span className="font-bold text-emerald-800 text-[11px] uppercase tracking-wide">Authorized Oracle Verifier</span>
                 </div>
-                <span className="text-slate-300">|</span>
-                <div className="flex items-center space-x-1.5">
-                  <span className="text-slate-500 font-sans text-[11px]">Balance:</span>
-                  <span className="font-bold text-slate-900 font-sans">{inrBalance}</span>
+              ) : (
+                <div className="hidden sm:flex items-center space-x-3 px-3.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono">
+                  <div className="flex items-center space-x-1.5">
+                    <span className="text-slate-500 font-sans text-[11px]">Carbon:</span>
+                    <span className="font-bold text-emerald-600">{ztcBalance} ZTC</span>
+                  </div>
+                  <span className="text-slate-300">|</span>
+                  <div className="flex items-center space-x-1.5">
+                    <span className="text-slate-500 font-sans text-[11px]">{role === 'BUYER' ? 'Wallet:' : 'Treasury:'}</span>
+                    <span className="font-bold text-slate-900 font-sans">{inrBalance}</span>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Role Switcher */}
               <div className="relative">

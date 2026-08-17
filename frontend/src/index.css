@@ -118,3 +118,15 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
 }
+
+/* Official Certificate Print Stylesheet */
+@media print {
+  @page {
+    size: landscape;
+    margin: 8mm;
+  }
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

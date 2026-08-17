@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useWeb3 } from '../context/Web3Context';
 import { api } from '../services/api';
 import { web3Service } from '../services/web3';
-import { Project, Claim, Retirement, TelemetryDataPoint } from '../types';
+import { Project, Claim, TelemetryDataPoint } from '../types';
 import { TelemetryComparisonChart } from '../components/Charts';
-import { CertificateModal } from '../components/CertificateModal';
 import { IPFSModal } from '../components/IPFSModal';
 import { 
   Sun, 
@@ -14,25 +13,19 @@ import {
   Database, 
   ArrowUpRight, 
   Zap, 
-  Flame,
   Clock,
   CheckCircle2,
-  Sparkles,
+  IndianRupee,
   ShieldCheck,
-  IndianRupee
+  RefreshCw
 } from 'lucide-react';
 
-interface CorporateDashboardProps {
-  onNavigateToAuditor?: () => void;
-}
-
-export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNavigateToAuditor }) => {
+export const CorporateDashboard: React.FC = () => {
   const { walletAddress, ztcBalance, inrBalance, activeAccount, refreshBalances, addNotification } = useWeb3();
 
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState<number>(1);
   const [claims, setClaims] = useState<Claim[]>([]);
-  const [retirements, setRetirements] = useState<Retirement[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   // Form Fields
@@ -42,29 +35,21 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
   const [ingesting, setIngesting] = useState<boolean>(false);
   const [mintingClaimId, setMintingClaimId] = useState<number | null>(null);
 
-  // Burn / Offset State
-  const [burnAmount, setBurnAmount] = useState<string>('10');
-  const [beneficiary, setBeneficiary] = useState<string>('Tata Power Renewable Energy Ltd');
-  const [isBurning, setIsBurning] = useState<boolean>(false);
-
-  // Modals
-  const [selectedRetirement, setSelectedRetirement] = useState<Retirement | null>(null);
+  // IPFS Modal
   const [selectedIPFSCid, setSelectedIPFSCid] = useState<string | null>(null);
 
   const loadData = async () => {
     try {
       setLoading(true);
-      const [projData, claimData, retData] = await Promise.all([
+      const [projData, claimData] = await Promise.all([
         api.getProjects(),
         api.getAllClaims(walletAddress),
-        api.getRetirements(),
       ]);
       setProjects(projData);
       if (projData.length > 0 && !selectedProjectId) {
         setSelectedProjectId(projData[0].id);
       }
       setClaims(claimData);
-      setRetirements(retData);
     } catch (e) {
       console.error(e);
     } finally {
@@ -158,12 +143,7 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
         activeAccount.privateKey
       );
 
-      try {
-        await api.confirmMint(claim.id, result.txHash);
-      } catch (e) {
-        console.warn('API sync completed:', e);
-      }
-
+      await api.confirmMint(claim.id, result.txHash);
       await refreshBalances();
       await loadData();
 
@@ -176,46 +156,6 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
       addNotification('error', 'Mint Error', err.reason || err.message || 'Failed to mint tokens');
     } finally {
       setMintingClaimId(null);
-    }
-  };
-
-  const handleBurnForOffset = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const amountNum = parseFloat(burnAmount);
-    if (isNaN(amountNum) || amountNum <= 0 || amountNum > parseFloat(ztcBalance)) {
-      addNotification('error', 'Invalid Amount', 'Please check available balance.');
-      return;
-    }
-
-    try {
-      setIsBurning(true);
-      addNotification('info', 'Retiring Credits', 'Permanently neutralizing carbon units on blockchain...');
-
-      const result = await web3Service.burnForOffset(
-        amountNum,
-        beneficiary,
-        'Clean Solar Energy Offset',
-        activeAccount.privateKey
-      );
-
-      const ret = await api.recordRetirement({
-        certificate_id: result.certificateId,
-        burner_wallet: walletAddress,
-        corporate_beneficiary: beneficiary,
-        reason: 'Clean Solar Energy Offset',
-        amount_tonnes: amountNum,
-        tx_hash: result.txHash,
-        block_number: result.blockNumber,
-      });
-
-      await refreshBalances();
-      await loadData();
-      addNotification('success', 'Offset Neutralized!', `Retired ${amountNum} ZTC. Certificate generated!`);
-      setSelectedRetirement(ret);
-    } catch (err: any) {
-      addNotification('error', 'Retirement Failed', err.reason || err.message || 'Failed to retire');
-    } finally {
-      setIsBurning(false);
     }
   };
 
@@ -393,8 +333,9 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
             <h2 className="font-display font-extrabold text-base text-slate-900">Step 2: Approved Claims & Minting</h2>
             <p className="text-xs text-slate-500">When an auditor approves your batch, click "Mint" to receive tokens.</p>
           </div>
-          <button onClick={loadData} className="trust-btn-secondary px-4 py-2 text-xs">
-            Refresh
+          <button onClick={loadData} className="trust-btn-secondary px-4 py-2 text-xs flex items-center space-x-1.5">
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>Refresh</span>
           </button>
         </div>
 
@@ -442,19 +383,10 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
 
                   {claim.status === 'PENDING_REVIEW' && (
                     <div className="flex items-center space-x-2">
-                      <span className="text-xs text-amber-600 font-medium flex items-center space-x-1">
+                      <span className="text-xs text-amber-600 font-medium flex items-center space-x-1 bg-amber-50 border border-amber-200/60 px-3 py-1.5 rounded-xl">
                         <Clock className="w-3.5 h-3.5 text-amber-500" />
-                        <span>Pending Review</span>
+                        <span>Pending Auditor Review</span>
                       </span>
-                      {onNavigateToAuditor && (
-                        <button
-                          type="button"
-                          onClick={onNavigateToAuditor}
-                          className="trust-btn-secondary px-3 py-1 text-[11px] text-indigo-600 font-bold"
-                        >
-                          Review in Auditor Hub &rarr;
-                        </button>
-                      )}
                     </div>
                   )}
 
@@ -474,60 +406,7 @@ export const CorporateDashboard: React.FC<CorporateDashboardProps> = ({ onNaviga
         )}
       </div>
 
-      {/* Step 3: Retire Credits */}
-      <div className="trust-card p-8 space-y-5">
-        <div className="flex items-center space-x-3 pb-3 border-b border-slate-100">
-          <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm">
-            <Flame className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="font-display font-extrabold text-base text-slate-900">Retire Carbon Credits</h2>
-            <p className="text-xs text-slate-500">Permanently burn credits on blockchain to claim official clean energy offset.</p>
-          </div>
-        </div>
-
-        <form onSubmit={handleBurnForOffset} className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
-          <div>
-            <label className="text-xs font-bold text-slate-700 block mb-1">Credits to Retire (ZTC)</label>
-            <input
-              type="number"
-              min="1"
-              max={parseFloat(ztcBalance) || 1000}
-              value={burnAmount}
-              onChange={(e) => setBurnAmount(e.target.value)}
-              className="w-full trust-input font-mono"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="text-xs font-bold text-slate-700 block mb-1">Beneficiary Name</label>
-            <input
-              type="text"
-              value={beneficiary}
-              onChange={(e) => setBeneficiary(e.target.value)}
-              className="w-full trust-input"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={isBurning || parseFloat(ztcBalance) <= 0}
-            className="trust-btn-secondary py-3 text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center justify-center space-x-1.5"
-          >
-            <Flame className="w-4 h-4" />
-            <span>Retire & Get Certificate</span>
-          </button>
-        </form>
-      </div>
-
-      {/* Modals */}
-      <CertificateModal
-        retirement={selectedRetirement}
-        onClose={() => setSelectedRetirement(null)}
-      />
-
+      {/* IPFS Document Modal */}
       <IPFSModal
         cid={selectedIPFSCid}
         onClose={() => setSelectedIPFSCid(null)}
