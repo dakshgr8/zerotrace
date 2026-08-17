@@ -3,130 +3,216 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-slate-50 text-slate-900 font-sans antialiased;
+    background-color: #FFFDF5;
+    color: #1E293B;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    letter-spacing: -0.015em;
+    /* Subtle Memphis dot grid background */
+    background-image: radial-gradient(#1E293B 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: 0 0;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display tracking-tight text-slate-900 font-extrabold;
+    font-family: 'Outfit', system-ui, sans-serif;
+    color: #1E293B;
+    font-weight: 800;
+    letter-spacing: -0.02em;
   }
 }
 
 @layer components {
-  /* Corporate Trust Card */
-  .trust-card {
-    @apply bg-white rounded-2xl border border-slate-200/80 transition-all duration-300;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 4px 16px -2px rgba(15, 23, 42, 0.05);
+  /* ========================================================================= */
+  /* PLAYFUL GEOMETRIC CARDS ("The Sticker Card")                              */
+  /* ========================================================================= */
+  
+  .pop-card {
+    @apply bg-white rounded-2xl border-2 border-[#1E293B] transition-all duration-200;
+    box-shadow: 4px 4px 0px 0px #1E293B;
   }
 
-  .trust-card-hover {
-    @apply bg-white rounded-2xl border border-slate-200/80 transition-all duration-300 hover:-translate-y-1 hover:border-indigo-300/80;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 4px 16px -2px rgba(15, 23, 42, 0.05);
+  .pop-card-hover {
+    @apply bg-white rounded-2xl border-2 border-[#1E293B] transition-all duration-200;
+    box-shadow: 4px 4px 0px 0px #1E293B;
   }
-  .trust-card-hover:hover {
-    box-shadow: 0 12px 30px -4px rgba(79, 70, 229, 0.12), 0 8px 12px -6px rgba(79, 70, 229, 0.06);
-  }
-
-  .trust-card-sm {
-    @apply bg-white rounded-xl border border-slate-200/80 shadow-sm transition-all duration-200;
+  .pop-card-hover:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px 0px #1E293B;
   }
 
-  /* Corporate Trust Buttons */
-  .trust-btn-primary {
-    @apply inline-flex items-center justify-center bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-semibold rounded-xl active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none shadow-sm;
-    box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.35);
+  /* Color-shadow accent cards */
+  .pop-card-violet {
+    @apply bg-white rounded-2xl border-2 border-[#1E293B] transition-all duration-200;
+    box-shadow: 5px 5px 0px 0px #8B5CF6;
   }
-  .trust-btn-primary:hover {
-    box-shadow: 0 6px 20px 0 rgba(79, 70, 229, 0.45);
+  .pop-card-pink {
+    @apply bg-white rounded-2xl border-2 border-[#1E293B] transition-all duration-200;
+    box-shadow: 5px 5px 0px 0px #F472B6;
   }
-
-  .trust-btn-secondary {
-    @apply inline-flex items-center justify-center bg-white border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 font-semibold rounded-xl hover:bg-slate-50/80 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 shadow-sm;
+  .pop-card-yellow {
+    @apply bg-white rounded-2xl border-2 border-[#1E293B] transition-all duration-200;
+    box-shadow: 5px 5px 0px 0px #FBBF24;
   }
-
-  .trust-btn-emerald {
-    @apply inline-flex items-center justify-center bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold rounded-xl active:scale-[0.98] transition-all duration-200 disabled:opacity-50 shadow-sm;
-    box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.35);
-  }
-  .trust-btn-emerald:hover {
-    box-shadow: 0 6px 20px 0 rgba(16, 185, 129, 0.45);
+  .pop-card-mint {
+    @apply bg-white rounded-2xl border-2 border-[#1E293B] transition-all duration-200;
+    box-shadow: 5px 5px 0px 0px #34D399;
   }
 
-  /* Form Inputs */
-  .trust-input {
-    @apply bg-white border border-slate-200/90 rounded-xl px-4 py-2.5 text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-150 shadow-sm;
+  /* ========================================================================= */
+  /* PLAYFUL GEOMETRIC BUTTONS ("The Candy Button")                            */
+  /* ========================================================================= */
+
+  /* Primary Button: Vivid Violet */
+  .pop-btn-primary {
+    @apply inline-flex items-center justify-center bg-[#8B5CF6] hover:bg-[#7C3AED] text-white font-display font-bold rounded-full border-2 border-[#1E293B] px-5 py-2.5 transition-all duration-150 active:translate-x-[2px] active:translate-y-[2px] disabled:opacity-50 disabled:pointer-events-none;
+    box-shadow: 4px 4px 0px 0px #1E293B;
+  }
+  .pop-btn-primary:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px 0px #1E293B;
+  }
+  .pop-btn-primary:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px 0px #1E293B;
   }
 
-  /* Inset Wells & Surfaces */
-  .trust-well {
-    @apply bg-slate-50/80 border border-slate-200/70 rounded-xl;
+  /* Secondary Button: White / Transparent with Yellow Hover */
+  .pop-btn-secondary {
+    @apply inline-flex items-center justify-center bg-white hover:bg-[#FBBF24] text-[#1E293B] font-display font-bold rounded-full border-2 border-[#1E293B] px-4 py-2 transition-all duration-150 disabled:opacity-50;
+    box-shadow: 3px 3px 0px 0px #1E293B;
+  }
+  .pop-btn-secondary:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px 0px #1E293B;
+  }
+  .pop-btn-secondary:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px 0px #1E293B;
   }
 
-  .trust-well-indigo {
-    @apply bg-indigo-50/60 border border-indigo-100 rounded-xl;
+  /* Candy Pink Button */
+  .pop-btn-pink {
+    @apply inline-flex items-center justify-center bg-[#F472B6] hover:bg-[#EC4899] text-white font-display font-bold rounded-full border-2 border-[#1E293B] px-5 py-2.5 transition-all duration-150 disabled:opacity-50;
+    box-shadow: 4px 4px 0px 0px #1E293B;
+  }
+  .pop-btn-pink:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px 0px #1E293B;
+  }
+  .pop-btn-pink:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px 0px #1E293B;
   }
 
-  /* Badges */
-  .trust-badge-indigo {
-    @apply inline-flex items-center space-x-1 bg-indigo-50 text-indigo-700 border border-indigo-200/70 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  /* Candy Mint / Emerald Button */
+  .pop-btn-mint {
+    @apply inline-flex items-center justify-center bg-[#34D399] hover:bg-[#10B981] text-[#1E293B] font-display font-bold rounded-full border-2 border-[#1E293B] px-5 py-2.5 transition-all duration-150 disabled:opacity-50;
+    box-shadow: 4px 4px 0px 0px #1E293B;
+  }
+  .pop-btn-mint:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px 0px #1E293B;
+  }
+  .pop-btn-mint:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px 0px #1E293B;
   }
 
-  .trust-badge-emerald {
-    @apply inline-flex items-center space-x-1 bg-emerald-50 text-emerald-700 border border-emerald-200/70 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  /* Candy Yellow Button */
+  .pop-btn-yellow {
+    @apply inline-flex items-center justify-center bg-[#FBBF24] hover:bg-[#F59E0B] text-[#1E293B] font-display font-bold rounded-full border-2 border-[#1E293B] px-5 py-2.5 transition-all duration-150 disabled:opacity-50;
+    box-shadow: 4px 4px 0px 0px #1E293B;
+  }
+  .pop-btn-yellow:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px 0px #1E293B;
+  }
+  .pop-btn-yellow:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px 0px #1E293B;
   }
 
-  .trust-badge-amber {
-    @apply inline-flex items-center space-x-1 bg-amber-50 text-amber-700 border border-amber-200/70 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  /* ========================================================================= */
+  /* PLAYFUL INPUTS                                                            */
+  /* ========================================================================= */
+
+  .pop-input {
+    @apply bg-white border-2 border-[#1E293B] rounded-xl px-4 py-2.5 text-[#1E293B] text-sm font-medium placeholder-slate-400 focus:outline-none focus:border-[#8B5CF6] transition-all duration-150;
+    box-shadow: 3px 3px 0px 0px rgba(30, 41, 59, 0.15);
+  }
+  .pop-input:focus {
+    box-shadow: 4px 4px 0px 0px #8B5CF6;
   }
 
-  .trust-badge-rose {
-    @apply inline-flex items-center space-x-1 bg-rose-50 text-rose-700 border border-rose-200/70 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  /* ========================================================================= */
+  /* PLAYFUL BADGES & PILLS                                                    */
+  /* ========================================================================= */
+
+  .pop-badge-violet {
+    @apply inline-flex items-center space-x-1.5 bg-[#EDE9FE] text-[#6D28D9] border-2 border-[#1E293B] rounded-full px-3 py-0.5 text-xs font-display font-bold;
+    box-shadow: 2px 2px 0px 0px #1E293B;
   }
 
-  /* Text Gradients */
-  .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-600 font-extrabold;
+  .pop-badge-pink {
+    @apply inline-flex items-center space-x-1.5 bg-[#FCE7F3] text-[#DB2777] border-2 border-[#1E293B] rounded-full px-3 py-0.5 text-xs font-display font-bold;
+    box-shadow: 2px 2px 0px 0px #1E293B;
   }
 
-  .gradient-emerald-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-600 font-extrabold;
+  .pop-badge-yellow {
+    @apply inline-flex items-center space-x-1.5 bg-[#FEF3C7] text-[#B45309] border-2 border-[#1E293B] rounded-full px-3 py-0.5 text-xs font-display font-bold;
+    box-shadow: 2px 2px 0px 0px #1E293B;
   }
 
-  .gradient-amber-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-amber-600 to-orange-600 font-extrabold;
+  .pop-badge-mint {
+    @apply inline-flex items-center space-x-1.5 bg-[#D1FAE5] text-[#047857] border-2 border-[#1E293B] rounded-full px-3 py-0.5 text-xs font-display font-bold;
+    box-shadow: 2px 2px 0px 0px #1E293B;
+  }
+
+  .pop-badge-slate {
+    @apply inline-flex items-center space-x-1.5 bg-[#F1F5F9] text-[#1E293B] border-2 border-[#1E293B] rounded-full px-3 py-0.5 text-xs font-display font-bold;
+    box-shadow: 2px 2px 0px 0px #1E293B;
+  }
+
+  /* Enclosed Icon Badge Container */
+  .pop-icon-box {
+    @apply w-11 h-11 rounded-2xl border-2 border-[#1E293B] flex items-center justify-center flex-shrink-0;
+    box-shadow: 3px 3px 0px 0px #1E293B;
   }
 }
 
-/* Custom Scrollbar */
+/* Animations */
+@keyframes popIn {
+  0% { transform: scale(0.94); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-pop-in {
+  animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Custom Scrollbar with Pop Style */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F8FAFC;
+  background: #FFFDF5;
+  border-left: 2px solid #1E293B;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: #FBBF24;
+  border: 2px solid #1E293B;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
-}
-
-/* Official Certificate Print Stylesheet */
-@media print {
-  @page {
-    size: landscape;
-    margin: 8mm;
-  }
-  body {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
+  background: #8B5CF6;
 }

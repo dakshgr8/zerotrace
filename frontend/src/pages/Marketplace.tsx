@@ -15,7 +15,10 @@ import {
   Zap,
   Sparkles,
   Layers,
-  Trash2
+  Trash2,
+  CheckCircle2,
+  IndianRupee,
+  ShieldCheck
 } from 'lucide-react';
 
 export const Marketplace: React.FC = () => {
@@ -31,7 +34,7 @@ export const Marketplace: React.FC = () => {
   const [listAmount, setListAmount] = useState<string>('25');
   const [listUnitPrice, setListUnitPrice] = useState<string>('1250');
   const [listVintage, setListVintage] = useState<number>(2026);
-  const [listProjectType, setListProjectType] = useState<string>('Solar Power Asset');
+  const [listProjectType, setListProjectType] = useState<string>('Bhadla Solar Asset Phase IV');
   const [isListing, setIsListing] = useState<boolean>(false);
 
   // Buy modal state
@@ -72,7 +75,7 @@ export const Marketplace: React.FC = () => {
 
     try {
       setIsListing(true);
-      addNotification('info', 'Creating Escrow Listing', 'Approving tokens and locking into marketplace contract...');
+      addNotification('info', 'Creating Escrow Listing', 'Locking tokens into non-custodial marketplace escrow...');
 
       const onChainResult = await web3Service.listCreditsOnMarketplace(
         amountNum,
@@ -120,7 +123,7 @@ export const Marketplace: React.FC = () => {
 
     try {
       setIsBuying(true);
-      addNotification('info', 'Purchasing Carbon Credits', `Executing on-chain settlement for ${amountNum} ZTC (${formatINR(totalCost)})...`);
+      addNotification('info', 'Purchasing Carbon Credits', `Executing settlement for ${amountNum} ZTC (${formatINR(totalCost)})...`);
 
       await web3Service.buyCreditsFromMarketplace(
         selectedListing.listing_id,
@@ -176,83 +179,81 @@ export const Marketplace: React.FC = () => {
   });
 
   return (
-    <div className="space-y-10 animate-fade-in max-w-5xl mx-auto">
+    <div className="space-y-10 animate-pop-in max-w-5xl mx-auto">
       
       {/* Header Banner */}
-      <div className="trust-card p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-        <div>
-          <div className="flex items-center space-x-3">
-            <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm">
-              <Sun className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="font-display font-extrabold text-xl text-slate-900">Solar Carbon Credit Marketplace</h1>
-              <p className="text-xs text-slate-500">
-                Peer-to-peer verified solar credit trading with non-custodial smart contract escrow in Indian Rupees (₹)
-              </p>
-            </div>
+      <div className="pop-card-yellow p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 bg-white">
+        <div className="flex items-center space-x-3.5">
+          <div className="w-13 h-13 rounded-2xl bg-[#FEF3C7] border-2 border-[#1E293B] flex items-center justify-center text-[#B45309] shadow-pop-xs">
+            <Sun className="w-7 h-7 stroke-[2.5]" />
+          </div>
+          <div>
+            <h1 className="font-display font-black text-2xl text-[#1E293B]">Solar Carbon Credit Marketplace</h1>
+            <p className="text-xs text-[#64748B] font-medium">
+              Peer-to-peer verified solar credit trading with non-custodial smart contract escrow in Indian Rupees (₹)
+            </p>
           </div>
         </div>
 
         <button
           onClick={() => setShowListModal(true)}
-          className="trust-btn-primary px-6 py-3 text-xs flex items-center space-x-2 whitespace-nowrap shadow-primary-btn"
+          className="pop-btn-primary px-6 py-3 text-xs flex items-center space-x-2 whitespace-nowrap"
         >
-          <PlusCircle className="w-4 h-4" />
+          <PlusCircle className="w-4 h-4 text-[#FBBF24] stroke-[2.5]" />
           <span>List Solar Credits for Sale</span>
         </button>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="trust-card p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="pop-card p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white">
         
         {/* Search Input */}
         <div className="relative w-full sm:w-80">
-          <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3.5 top-3 w-4 h-4 text-[#64748B] stroke-[2.5]" />
           <input
             type="text"
             placeholder="Search solar park, project, or vintage..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full trust-input pl-10 text-xs"
+            className="w-full pop-input pl-10 text-xs"
           />
         </div>
 
         {/* Category Pills */}
-        <div className="flex items-center space-x-1.5 p-1 bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold w-full sm:w-auto justify-center overflow-x-auto">
+        <div className="flex items-center space-x-2 p-1.5 bg-[#F1F5F9] border-2 border-[#1E293B] rounded-full text-xs font-display font-bold w-full sm:w-auto justify-center overflow-x-auto">
           <button
             onClick={() => setSelectedCategory('ALL')}
-            className={`px-3 py-1.5 rounded-lg transition-all ${
-              selectedCategory === 'ALL' ? 'bg-white text-indigo-600 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
+            className={`px-4 py-1.5 rounded-full transition-all ${
+              selectedCategory === 'ALL' ? 'bg-[#8B5CF6] text-white border-2 border-[#1E293B] shadow-pop-xs' : 'text-[#1E293B] hover:text-[#8B5CF6]'
             }`}
           >
-            All Solar Credits
+            All Credits
           </button>
           <button
             onClick={() => setSelectedCategory('UTILITY')}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
-              selectedCategory === 'UTILITY' ? 'bg-white text-amber-600 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
+            className={`px-4 py-1.5 rounded-full transition-all flex items-center space-x-1.5 ${
+              selectedCategory === 'UTILITY' ? 'bg-[#FEF3C7] text-[#B45309] border-2 border-[#1E293B] shadow-pop-xs' : 'text-[#1E293B] hover:text-[#B45309]'
             }`}
           >
-            <Sun className="w-3.5 h-3.5 text-amber-500" />
-            <span>Mega Solar Parks</span>
+            <Sun className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>Mega Solar</span>
           </button>
           <button
             onClick={() => setSelectedCategory('ROOFTOP')}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
-              selectedCategory === 'ROOFTOP' ? 'bg-white text-indigo-600 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
+            className={`px-4 py-1.5 rounded-full transition-all flex items-center space-x-1.5 ${
+              selectedCategory === 'ROOFTOP' ? 'bg-[#EDE9FE] text-[#6D28D9] border-2 border-[#1E293B] shadow-pop-xs' : 'text-[#1E293B] hover:text-[#6D28D9]'
             }`}
           >
-            <Zap className="w-3.5 h-3.5 text-indigo-500" />
-            <span>C&I Rooftop Solar</span>
+            <Zap className="w-3.5 h-3.5 stroke-[2.5]" />
+            <span>C&I Rooftop</span>
           </button>
           <button
             onClick={() => setSelectedCategory('FLOATING')}
-            className={`px-3 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 ${
-              selectedCategory === 'FLOATING' ? 'bg-white text-emerald-600 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
+            className={`px-4 py-1.5 rounded-full transition-all flex items-center space-x-1.5 ${
+              selectedCategory === 'FLOATING' ? 'bg-[#D1FAE5] text-[#047857] border-2 border-[#1E293B] shadow-pop-xs' : 'text-[#1E293B] hover:text-[#047857]'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
+            <Sparkles className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>Floating Solar</span>
           </button>
         </div>
@@ -260,69 +261,70 @@ export const Marketplace: React.FC = () => {
       </div>
 
       {/* Grid of Listings */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredListings.length === 0 ? (
-          <div className="col-span-full trust-card p-16 text-center text-slate-500 text-xs">
-            <Sun className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <p className="font-bold text-slate-900">No Active Solar Listings in Escrow</p>
-            <p className="text-[11px] mt-1">Solar plant operators can list carbon credits using the button above.</p>
+          <div className="col-span-full pop-card p-16 text-center text-[#64748B] text-xs space-y-2 bg-white">
+            <Sun className="w-12 h-12 text-[#FBBF24] mx-auto mb-2 stroke-[2.5]" />
+            <p className="font-display font-black text-[#1E293B] text-base">No Active Solar Listings in Escrow</p>
+            <p className="text-[11px] font-medium">Energy producers can deposit credits for sale using the button above.</p>
           </div>
         ) : (
           filteredListings.map((item) => {
             const isFloating = item.project_type.toLowerCase().includes('floating');
             const isMyListing = item.seller_wallet.toLowerCase() === walletAddress.toLowerCase();
             const unitPrice = item.unit_price_inr || 1250;
+            const cardColor = isFloating ? 'pop-card-mint' : 'pop-card-yellow';
 
             return (
               <div
                 key={item.id}
-                className="trust-card-hover p-8 flex flex-col justify-between space-y-5 transition-all duration-200"
+                className={`${cardColor} p-6 flex flex-col justify-between space-y-5 bg-white`}
               >
                 <div>
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                        isFloating ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100'
-                      }`}>
-                        <Sun className="w-5 h-5" />
+                      <div className={`w-11 h-11 rounded-2xl flex items-center justify-center border-2 border-[#1E293B] ${
+                        isFloating ? 'bg-[#D1FAE5] text-[#047857]' : 'bg-[#FEF3C7] text-[#B45309]'
+                      } shadow-pop-xs`}>
+                        <Sun className="w-5 h-5 stroke-[2.5]" />
                       </div>
                       <div>
-                        <h3 className="font-display font-bold text-sm text-slate-900">{item.project_name || item.project_type}</h3>
-                        <p className="text-[10px] text-slate-400">Vintage Year {item.vintage_year}</p>
+                        <h3 className="font-display font-black text-sm text-[#1E293B]">{item.project_name || item.project_type}</h3>
+                        <p className="text-[11px] text-[#64748B] font-bold">Vintage {item.vintage_year}</p>
                       </div>
                     </div>
 
                     {isMyListing && (
-                      <span className="trust-badge-indigo px-2 py-0.5 text-[9px]">
+                      <span className="pop-badge-slate text-[9px]">
                         My Listing
                       </span>
                     )}
                   </div>
 
-                  <div className="mt-5 p-4 rounded-xl bg-slate-50 border border-slate-200/80 grid grid-cols-2 gap-3 text-xs">
+                  <div className="mt-5 p-4 rounded-2xl bg-[#FFFDF5] border-2 border-[#1E293B] grid grid-cols-2 gap-3 text-xs">
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase font-bold">Remaining</span>
-                      <p className="font-mono font-extrabold text-base text-emerald-600 mt-0.5">{item.remaining_amount.toFixed(1)} ZTC</p>
+                      <span className="text-[10px] text-[#64748B] uppercase font-display font-black">Available</span>
+                      <p className="font-mono font-black text-lg text-[#047857] mt-0.5">{item.remaining_amount.toFixed(1)} ZTC</p>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-400 uppercase font-bold">Price</span>
-                      <p className="font-mono font-extrabold text-base text-slate-900 mt-0.5">{formatINR(unitPrice)}</p>
+                      <span className="text-[10px] text-[#64748B] uppercase font-display font-black">Price per ton</span>
+                      <p className="font-mono font-black text-lg text-[#1E293B] mt-0.5">{formatINR(unitPrice)}</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-slate-100 space-y-2">
-                  <div className="flex justify-between text-[11px] text-slate-500">
+                <div className="pt-3 border-t-2 border-[#E2E8F0] space-y-2">
+                  <div className="flex justify-between text-[11px] text-[#64748B] font-mono">
                     <span>Seller:</span>
-                    <span className="font-mono">{item.seller_wallet.slice(0, 6)}...{item.seller_wallet.slice(-4)}</span>
+                    <span className="font-bold">{item.seller_wallet.slice(0, 6)}...{item.seller_wallet.slice(-4)}</span>
                   </div>
 
                   {isMyListing ? (
                     <button
                       onClick={() => handleCancelListing(item)}
-                      className="trust-btn-secondary w-full py-2.5 text-xs text-rose-600 hover:text-rose-700 hover:border-rose-300 font-bold flex items-center justify-center space-x-1.5"
+                      className="pop-btn-pink w-full py-2.5 text-xs flex items-center justify-center space-x-1.5"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-3.5 h-3.5 stroke-[2.5]" />
                       <span>Cancel Listing & Reclaim</span>
                     </button>
                   ) : (
@@ -331,9 +333,9 @@ export const Marketplace: React.FC = () => {
                         setSelectedListing(item);
                         setBuyAmount(Math.min(10, item.remaining_amount).toString());
                       }}
-                      className="trust-btn-primary w-full py-2.5 text-xs flex items-center justify-center space-x-1.5"
+                      className="pop-btn-primary w-full py-2.5 text-xs flex items-center justify-center space-x-1.5"
                     >
-                      <ShoppingCart className="w-3.5 h-3.5" />
+                      <ShoppingCart className="w-3.5 h-3.5 stroke-[2.5]" />
                       <span>Buy Carbon Credits</span>
                     </button>
                   )}
@@ -346,34 +348,34 @@ export const Marketplace: React.FC = () => {
 
       {/* List Modal */}
       {showListModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="w-full max-w-md p-8 bg-white rounded-3xl border border-slate-200 shadow-2xl space-y-5">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-pop-in">
+          <div className="w-full max-w-md p-8 bg-white rounded-3xl border-2 border-[#1E293B] shadow-pop-lg space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b-2 border-[#E2E8F0]">
               <div className="flex items-center space-x-2">
-                <Tag className="w-4 h-4 text-indigo-600" />
-                <h3 className="font-display font-extrabold text-base text-slate-900">List Carbon Credits (INR ₹)</h3>
+                <Tag className="w-5 h-5 text-[#8B5CF6] stroke-[2.5]" />
+                <h3 className="font-display font-black text-lg text-[#1E293B]">List Carbon Credits (INR ₹)</h3>
               </div>
-              <button onClick={() => setShowListModal(false)} className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-400">
-                <X className="w-4 h-4" />
+              <button onClick={() => setShowListModal(false)} className="p-1.5 rounded-xl hover:bg-[#F1F5F9] text-[#64748B]">
+                <X className="w-5 h-5 stroke-[2.5]" />
               </button>
             </div>
 
             <form onSubmit={handleCreateListing} className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1.5">Project / Asset Name</label>
+                <label className="text-xs font-display font-black text-[#1E293B] block mb-1.5">Project / Asset Name</label>
                 <input
                   type="text"
                   value={listProjectType}
                   onChange={(e) => setListProjectType(e.target.value)}
-                  className="w-full trust-input text-xs"
+                  className="w-full pop-input text-xs"
                   required
                 />
               </div>
 
               <div>
                 <div className="flex justify-between items-center mb-1.5">
-                  <label className="text-xs font-bold text-slate-700">Credits to List (ZTC)</label>
-                  <span className="text-[11px] text-slate-400 font-mono">Available: {ztcBalance} ZTC</span>
+                  <label className="text-xs font-display font-black text-[#1E293B]">Credits to List (ZTC)</label>
+                  <span className="text-[11px] text-[#64748B] font-mono font-bold">Available: {ztcBalance} ZTC</span>
                 </div>
                 <input
                   type="number"
@@ -382,20 +384,20 @@ export const Marketplace: React.FC = () => {
                   max={ztcBalance}
                   value={listAmount}
                   onChange={(e) => setListAmount(e.target.value)}
-                  className="w-full trust-input text-xs font-mono"
+                  className="w-full pop-input text-xs font-mono"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1.5">Unit Price (₹ per ZTC / ton CO₂)</label>
+                <label className="text-xs font-display font-black text-[#1E293B] block mb-1.5">Unit Price (₹ per ZTC / ton CO₂)</label>
                 <input
                   type="number"
                   step="50"
                   min="100"
                   value={listUnitPrice}
                   onChange={(e) => setListUnitPrice(e.target.value)}
-                  className="w-full trust-input text-xs font-mono"
+                  className="w-full pop-input text-xs font-mono"
                   required
                 />
               </div>
@@ -403,11 +405,11 @@ export const Marketplace: React.FC = () => {
               <button
                 type="submit"
                 disabled={isListing || parseFloat(ztcBalance) <= 0}
-                className="trust-btn-primary w-full py-3.5 text-xs flex items-center justify-center space-x-2 mt-4"
+                className="pop-btn-primary w-full py-3.5 text-xs flex items-center justify-center space-x-2 mt-4"
               >
                 {isListing ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin stroke-[2.5]" />
                     <span>Locking Tokens in Escrow...</span>
                   </>
                 ) : (
@@ -421,28 +423,28 @@ export const Marketplace: React.FC = () => {
 
       {/* Buy Modal */}
       {selectedListing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="w-full max-w-md p-8 bg-white rounded-3xl border border-slate-200 shadow-2xl space-y-5">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-pop-in">
+          <div className="w-full max-w-md p-8 bg-white rounded-3xl border-2 border-[#1E293B] shadow-pop-lg space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b-2 border-[#E2E8F0]">
               <div className="flex items-center space-x-2">
-                <ShoppingCart className="w-4 h-4 text-indigo-600" />
-                <h3 className="font-display font-extrabold text-base text-slate-900">Buy Carbon Credits (INR ₹)</h3>
+                <ShoppingCart className="w-5 h-5 text-[#8B5CF6] stroke-[2.5]" />
+                <h3 className="font-display font-black text-lg text-[#1E293B]">Buy Carbon Credits (INR ₹)</h3>
               </div>
-              <button onClick={() => setSelectedListing(null)} className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-400">
-                <X className="w-4 h-4" />
+              <button onClick={() => setSelectedListing(null)} className="p-1.5 rounded-xl hover:bg-[#F1F5F9] text-[#64748B]">
+                <X className="w-5 h-5 stroke-[2.5]" />
               </button>
             </div>
 
             <form onSubmit={handleBuyCredits} className="space-y-4">
               <div>
-                <span className="text-xs text-slate-400 block mb-1 font-bold">Project</span>
-                <p className="text-sm font-bold text-slate-900">{selectedListing.project_name || selectedListing.project_type}</p>
+                <span className="text-xs text-[#64748B] block mb-1 font-display font-black">Project</span>
+                <p className="text-sm font-display font-black text-[#1E293B]">{selectedListing.project_name || selectedListing.project_type}</p>
               </div>
 
               <div>
                 <div className="flex justify-between items-center mb-1.5">
-                  <label className="text-xs font-bold text-slate-700">Quantity to Buy (ZTC)</label>
-                  <span className="text-[11px] text-slate-400 font-mono">
+                  <label className="text-xs font-display font-black text-[#1E293B]">Quantity to Buy (ZTC)</label>
+                  <span className="text-[11px] text-[#64748B] font-mono font-bold">
                     Max: {selectedListing.remaining_amount} ZTC
                   </span>
                 </div>
@@ -453,19 +455,19 @@ export const Marketplace: React.FC = () => {
                   max={selectedListing.remaining_amount}
                   value={buyAmount}
                   onChange={(e) => setBuyAmount(e.target.value)}
-                  className="w-full trust-input text-xs font-mono"
+                  className="w-full pop-input text-xs font-mono"
                   required
                 />
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1.5 font-mono">
-                <div className="flex justify-between text-slate-500 text-[11px]">
+              <div className="p-4 rounded-2xl bg-[#FFFDF5] border-2 border-[#1E293B] text-xs space-y-1.5 font-mono">
+                <div className="flex justify-between text-[#64748B]">
                   <span>Unit Price:</span>
                   <span>{formatINR(selectedListing.unit_price_inr || 1250)} / ton</span>
                 </div>
-                <div className="flex justify-between text-slate-900 font-bold pt-1 border-t border-slate-200">
+                <div className="flex justify-between text-[#1E293B] font-black pt-1.5 border-t-2 border-[#E2E8F0]">
                   <span>Total Settlement:</span>
-                  <span className="text-emerald-600">
+                  <span className="text-[#047857]">
                     {formatINR((parseFloat(buyAmount || '0') * (selectedListing.unit_price_inr || 1250)))}
                   </span>
                 </div>
@@ -474,11 +476,11 @@ export const Marketplace: React.FC = () => {
               <button
                 type="submit"
                 disabled={isBuying}
-                className="trust-btn-primary w-full py-3.5 text-xs flex items-center justify-center space-x-2"
+                className="pop-btn-primary w-full py-3.5 text-xs flex items-center justify-center space-x-2"
               >
                 {isBuying ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin stroke-[2.5]" />
                     <span>Executing Purchase...</span>
                   </>
                 ) : (

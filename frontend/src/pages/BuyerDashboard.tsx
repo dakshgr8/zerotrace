@@ -32,7 +32,7 @@ export const BuyerDashboard: React.FC = () => {
 
   // Retire form
   const [burnAmount, setBurnAmount] = useState<string>('5');
-  const [beneficiary, setBeneficiary] = useState<string>('Corporate ESG Sustainability');
+  const [beneficiary, setBeneficiary] = useState<string>('Infosys Technologies Ltd');
   const [isBurning, setIsBurning] = useState<boolean>(false);
   const [selectedRetirement, setSelectedRetirement] = useState<Retirement | null>(null);
 
@@ -71,7 +71,7 @@ export const BuyerDashboard: React.FC = () => {
 
     try {
       setIsBuying(true);
-      addNotification('info', 'Purchasing Carbon Credits', `Executing on-chain settlement for ${amountNum} ZTC (${formatINR(totalCost)})...`);
+      addNotification('info', 'Purchasing Carbon Credits', `Executing settlement for ${amountNum} ZTC (${formatINR(totalCost)})...`);
 
       await web3Service.buyCreditsFromMarketplace(
         selectedListing.listing_id,
@@ -134,73 +134,72 @@ export const BuyerDashboard: React.FC = () => {
   };
 
   return (
-    <div className="space-y-10 animate-fade-in max-w-5xl mx-auto">
+    <div className="space-y-10 animate-pop-in max-w-5xl mx-auto">
       
       {/* Header Summary */}
-      <div className="trust-card p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm">
-            <ShoppingCart className="w-6 h-6" />
+      <div className="pop-card-pink p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white">
+        <div className="flex items-center space-x-3.5">
+          <div className="w-13 h-13 rounded-2xl bg-[#FCE7F3] border-2 border-[#1E293B] flex items-center justify-center text-[#DB2777] shadow-pop-xs">
+            <ShoppingCart className="w-7 h-7 stroke-[2.5]" />
           </div>
           <div>
-            <h1 className="font-display font-extrabold text-xl text-slate-900">Carbon Credit Marketplace (INR ₹)</h1>
-            <p className="text-xs text-slate-500">Direct peer-to-peer carbon trading with instant blockchain settlement in Indian Rupees.</p>
+            <h1 className="font-display font-black text-2xl text-[#1E293B]">Carbon Credit Marketplace & Retirement</h1>
+            <p className="text-xs text-[#64748B] font-medium">Acquire verified solar credits with Indian Rupee (₹) settlement and retire for official certificates.</p>
           </div>
         </div>
 
-        <div className="flex items-center space-x-3 text-xs font-medium">
-          <div className="px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 font-mono">
-            <span className="text-slate-500">Wallet Balance: </span>
-            <span className="font-bold text-slate-900 font-sans">{inrBalance}</span>
+        <div className="flex items-center space-x-3 text-xs font-display font-bold">
+          <div className="px-4 py-2 rounded-2xl bg-[#FFFDF5] border-2 border-[#1E293B] font-mono shadow-pop-xs">
+            <span className="text-[#64748B] font-display font-bold">INR Wallet: </span>
+            <span className="font-black text-[#1E293B] font-sans">{inrBalance}</span>
           </div>
-          <div className="px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 font-mono">
-            <span className="text-slate-500">Credits: </span>
-            <span className="font-bold text-emerald-600">{ztcBalance} ZTC</span>
+          <div className="px-4 py-2 rounded-2xl bg-[#FFFDF5] border-2 border-[#1E293B] font-mono shadow-pop-xs">
+            <span className="text-[#64748B] font-display font-bold">Holding: </span>
+            <span className="font-black text-[#047857]">{ztcBalance} ZTC</span>
           </div>
         </div>
       </div>
 
       {/* Clean Grid of Available Listings */}
       <div className="space-y-4">
-        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider px-2">
-          Available Carbon Credits ({listings.length})
+        <span className="text-xs font-display font-black text-[#1E293B] uppercase tracking-wider px-1">
+          Available Carbon Credits ({listings.length} Active Listings)
         </span>
 
         {listings.length === 0 ? (
-          <div className="trust-card p-12 text-center text-slate-500 text-xs">
-            <p className="font-bold text-slate-900">No Active Listings in Order Book</p>
-            <p className="text-[11px] mt-1">Energy producers can list verified credits for sale from the marketplace tab.</p>
+          <div className="pop-card p-12 text-center text-[#64748B] text-xs bg-white">
+            <p className="font-display font-black text-[#1E293B] text-base">No Active Listings in Order Book</p>
+            <p className="text-[11px] mt-1 font-medium">Solar producers can list verified credits for sale from the marketplace tab.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {listings.map((item) => {
-              const isSolar = item.project_type.toLowerCase().includes('solar');
               const unitPrice = item.unit_price_inr || 1250;
 
               return (
                 <div
                   key={item.id}
-                  className="trust-card-hover p-6 flex flex-col justify-between space-y-4"
+                  className="pop-card-yellow p-6 flex flex-col justify-between space-y-4 bg-white"
                 >
                   <div>
-                    <div className="flex items-center space-x-2.5">
-                      <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-amber-50 text-amber-600 border border-amber-100">
-                        <Sun className="w-4 h-4" />
+                    <div className="flex items-center space-x-3">
+                      <div className="w-11 h-11 rounded-2xl flex items-center justify-center bg-[#FEF3C7] text-[#B45309] border-2 border-[#1E293B] shadow-pop-xs">
+                        <Sun className="w-5 h-5 stroke-[2.5]" />
                       </div>
                       <div>
-                        <h3 className="font-display font-bold text-xs text-slate-900">{item.project_name || item.project_type}</h3>
-                        <p className="text-[10px] text-slate-400">Vintage {item.vintage_year}</p>
+                        <h3 className="font-display font-black text-sm text-[#1E293B]">{item.project_name || item.project_type}</h3>
+                        <p className="text-[11px] text-[#64748B] font-bold">Vintage {item.vintage_year}</p>
                       </div>
                     </div>
 
-                    <div className="mt-4 p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 flex justify-between text-xs font-mono">
+                    <div className="mt-4 p-3.5 bg-[#FFFDF5] rounded-2xl border-2 border-[#1E293B] flex justify-between text-xs font-mono">
                       <div>
-                        <span className="text-[10px] text-slate-400 uppercase block font-sans font-bold">Available</span>
-                        <span className="font-bold text-emerald-600">{item.remaining_amount.toFixed(1)} ZTC</span>
+                        <span className="text-[10px] text-[#64748B] uppercase block font-display font-black">Available</span>
+                        <span className="font-black text-base text-[#047857]">{item.remaining_amount.toFixed(1)} ZTC</span>
                       </div>
                       <div className="text-right">
-                        <span className="text-[10px] text-slate-400 uppercase block font-sans font-bold">Price</span>
-                        <span className="font-bold text-slate-900">{formatINR(unitPrice)} <span className="text-[10px] font-sans font-normal text-slate-400">/ ton</span></span>
+                        <span className="text-[10px] text-[#64748B] uppercase block font-display font-black">Price</span>
+                        <span className="font-black text-base text-[#1E293B]">{formatINR(unitPrice)} <span className="text-[10px] font-sans font-normal text-[#64748B]">/ ton</span></span>
                       </div>
                     </div>
                   </div>
@@ -210,9 +209,9 @@ export const BuyerDashboard: React.FC = () => {
                       setSelectedListing(item);
                       setBuyAmount(Math.min(10, item.remaining_amount).toString());
                     }}
-                    className="trust-btn-primary w-full py-2.5 text-xs flex items-center justify-center space-x-1.5"
+                    className="pop-btn-primary w-full py-2.5 text-xs flex items-center justify-center space-x-1.5"
                   >
-                    <ShoppingCart className="w-3.5 h-3.5" />
+                    <ShoppingCart className="w-3.5 h-3.5 stroke-[2.5]" />
                     <span>Buy Credits</span>
                   </button>
                 </div>
@@ -223,38 +222,38 @@ export const BuyerDashboard: React.FC = () => {
       </div>
 
       {/* Retire Credits Section */}
-      <div className="trust-card p-8 space-y-5">
-        <div className="flex items-center space-x-3 pb-3 border-b border-slate-100">
-          <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-sm">
-            <Flame className="w-5 h-5" />
+      <div className="pop-card-mint p-8 space-y-5 bg-white">
+        <div className="flex items-center space-x-3.5 pb-4 border-b-2 border-[#E2E8F0]">
+          <div className="w-11 h-11 rounded-2xl bg-[#D1FAE5] border-2 border-[#1E293B] flex items-center justify-center text-[#047857] shadow-pop-xs">
+            <Flame className="w-6 h-6 stroke-[2.5]" />
           </div>
           <div>
-            <h2 className="font-display font-extrabold text-base text-slate-900">Retire Carbon Credits</h2>
-            <p className="text-xs text-slate-500">Permanently neutralize your company's carbon footprint and generate an official cryptographic certificate.</p>
+            <h2 className="font-display font-black text-lg text-[#1E293B]">Retire Carbon Credits for Certificate</h2>
+            <p className="text-xs text-[#64748B] font-medium">Permanently neutralize your carbon footprint and generate an official cryptographic certificate.</p>
           </div>
         </div>
 
         <form onSubmit={handleBurnForOffset} className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
           <div>
-            <label className="text-xs font-bold text-slate-700 block mb-1">Quantity to Retire (ZTC)</label>
+            <label className="text-xs font-display font-black text-[#1E293B] block mb-1">Quantity to Retire (ZTC)</label>
             <input
               type="number"
               min="1"
               max={ztcBalance}
               value={burnAmount}
               onChange={(e) => setBurnAmount(e.target.value)}
-              className="w-full trust-input font-mono"
+              className="w-full pop-input font-mono"
               required
             />
           </div>
 
           <div>
-            <label className="text-xs font-bold text-slate-700 block mb-1">Company / Beneficiary</label>
+            <label className="text-xs font-display font-black text-[#1E293B] block mb-1">Company / Beneficiary Name</label>
             <input
               type="text"
               value={beneficiary}
               onChange={(e) => setBeneficiary(e.target.value)}
-              className="w-full trust-input"
+              className="w-full pop-input font-display font-bold"
               required
             />
           </div>
@@ -262,9 +261,9 @@ export const BuyerDashboard: React.FC = () => {
           <button
             type="submit"
             disabled={isBurning || parseFloat(ztcBalance) <= 0}
-            className="trust-btn-secondary py-3 text-xs font-bold text-amber-600 hover:text-amber-700 flex items-center justify-center space-x-1.5"
+            className="pop-btn-mint py-3 text-xs flex items-center justify-center space-x-1.5"
           >
-            <Flame className="w-4 h-4" />
+            <Flame className="w-4 h-4 stroke-[2.5]" />
             <span>Retire & Get Certificate</span>
           </button>
         </form>
@@ -272,25 +271,25 @@ export const BuyerDashboard: React.FC = () => {
 
       {/* Buy Modal */}
       {selectedListing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="w-full max-w-md p-8 bg-white rounded-3xl border border-slate-200 shadow-2xl space-y-5">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <h3 className="font-display font-extrabold text-base text-slate-900">Buy Carbon Credits (INR ₹)</h3>
-              <button onClick={() => setSelectedListing(null)} className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-400">
-                <X className="w-4 h-4" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-pop-in">
+          <div className="w-full max-w-md p-8 bg-white rounded-3xl border-2 border-[#1E293B] shadow-pop-lg space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b-2 border-[#E2E8F0]">
+              <h3 className="font-display font-black text-lg text-[#1E293B]">Buy Carbon Credits (INR ₹)</h3>
+              <button onClick={() => setSelectedListing(null)} className="p-1.5 rounded-xl hover:bg-[#F1F5F9] text-[#64748B]">
+                <X className="w-5 h-5 stroke-[2.5]" />
               </button>
             </div>
 
             <form onSubmit={handleBuyCredits} className="space-y-4">
               <div>
-                <span className="text-xs text-slate-400 block mb-0.5 font-bold">Project</span>
-                <p className="text-sm font-bold text-slate-900">{selectedListing.project_name || selectedListing.project_type}</p>
+                <span className="text-xs text-[#64748B] block mb-0.5 font-display font-black">Project</span>
+                <p className="text-sm font-display font-black text-[#1E293B]">{selectedListing.project_name || selectedListing.project_type}</p>
               </div>
 
               <div>
                 <div className="flex justify-between items-center mb-1">
-                  <label className="text-xs font-bold text-slate-700">Quantity to Buy (ZTC)</label>
-                  <span className="text-[11px] text-slate-400 font-mono">Max: {selectedListing.remaining_amount} ZTC</span>
+                  <label className="text-xs font-display font-black text-[#1E293B]">Quantity to Buy (ZTC)</label>
+                  <span className="text-[11px] text-[#64748B] font-mono font-bold">Max: {selectedListing.remaining_amount} ZTC</span>
                 </div>
                 <input
                   type="number"
@@ -299,19 +298,19 @@ export const BuyerDashboard: React.FC = () => {
                   max={selectedListing.remaining_amount}
                   value={buyAmount}
                   onChange={(e) => setBuyAmount(e.target.value)}
-                  className="w-full trust-input font-mono"
+                  className="w-full pop-input font-mono"
                   required
                 />
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1 text-xs font-mono">
-                <div className="flex justify-between text-slate-500">
+              <div className="p-4 rounded-2xl bg-[#FFFDF5] border-2 border-[#1E293B] space-y-1 text-xs font-mono">
+                <div className="flex justify-between text-[#64748B]">
                   <span>Unit Price:</span>
                   <span>{formatINR(selectedListing.unit_price_inr || 1250)} / ton</span>
                 </div>
-                <div className="flex justify-between text-slate-900 font-bold pt-1 border-t border-slate-200">
+                <div className="flex justify-between text-[#1E293B] font-black pt-1.5 border-t-2 border-[#E2E8F0]">
                   <span>Total Settlement:</span>
-                  <span className="text-emerald-600">
+                  <span className="text-[#047857]">
                     {formatINR((parseFloat(buyAmount || '0') * (selectedListing.unit_price_inr || 1250)))}
                   </span>
                 </div>
@@ -320,12 +319,12 @@ export const BuyerDashboard: React.FC = () => {
               <button
                 type="submit"
                 disabled={isBuying}
-                className="trust-btn-primary w-full py-3.5 text-xs flex items-center justify-center space-x-2"
+                className="pop-btn-primary w-full py-3.5 text-xs flex items-center justify-center space-x-2"
               >
                 {isBuying ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Executing Blockchain Settlement...</span>
+                    <Loader2 className="w-4 h-4 animate-spin stroke-[2.5]" />
+                    <span>Executing Settlement...</span>
                   </>
                 ) : (
                   <span>Confirm Purchase ({formatINR((parseFloat(buyAmount || '0') * (selectedListing.unit_price_inr || 1250)))})</span>
@@ -336,6 +335,7 @@ export const BuyerDashboard: React.FC = () => {
         </div>
       )}
 
+      {/* Certificate Modal */}
       <CertificateModal
         retirement={selectedRetirement}
         onClose={() => setSelectedRetirement(null)}

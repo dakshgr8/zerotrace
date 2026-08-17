@@ -13,7 +13,7 @@ export const TelemetryComparisonChart: React.FC<TelemetryChartProps> = ({
   if (!dataPoints || dataPoints.length === 0) {
     return (
       <div 
-        className="w-full flex items-center justify-center bg-slate-50/60 rounded-xl border border-slate-200/80 text-xs text-slate-400 font-medium"
+        className="w-full flex items-center justify-center bg-white rounded-2xl border-2 border-[#1E293B] text-xs text-[#64748B] font-display font-bold shadow-pop-xs"
         style={{ height }}
       >
         No telemetry time-series points available
@@ -51,16 +51,16 @@ export const TelemetryComparisonChart: React.FC<TelemetryChartProps> = ({
   const scadaArea = `${scadaPath} L ${paddingX + graphWidth} ${height - paddingY} L ${paddingX} ${height - paddingY} Z`;
 
   return (
-    <div className="w-full bg-slate-50/70 rounded-xl border border-slate-200/80 p-3 overflow-hidden">
+    <div className="w-full bg-[#FFFDF5] rounded-2xl border-2 border-[#1E293B] p-3.5 overflow-hidden shadow-pop-xs">
       <svg
         viewBox={`0 0 ${width} ${height}`}
         className="w-full h-full overflow-visible"
         style={{ maxHeight: height }}
       >
         <defs>
-          <linearGradient id="scadaTrustGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#4F46E5" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="#4F46E5" stopOpacity="0.0" />
+          <linearGradient id="scadaPopGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0.0" />
           </linearGradient>
         </defs>
 
@@ -77,15 +77,16 @@ export const TelemetryComparisonChart: React.FC<TelemetryChartProps> = ({
                 y2={y}
                 stroke="#E2E8F0"
                 strokeDasharray="4 4"
-                strokeWidth="1"
+                strokeWidth="1.5"
               />
               <text
                 x={paddingX - 6}
                 y={y + 3}
                 textAnchor="end"
                 fontSize="9"
-                fill="#94A3B8"
+                fill="#64748B"
                 fontFamily="JetBrains Mono"
+                fontWeight="700"
               >
                 {powerVal}
               </text>
@@ -99,30 +100,30 @@ export const TelemetryComparisonChart: React.FC<TelemetryChartProps> = ({
           y1={height - paddingY}
           x2={width - paddingX}
           y2={height - paddingY}
-          stroke="#CBD5E1"
-          strokeWidth="1.5"
+          stroke="#1E293B"
+          strokeWidth="2"
         />
 
         {/* SCADA Area fill */}
-        <path d={scadaArea} fill="url(#scadaTrustGradient)" />
+        <path d={scadaArea} fill="url(#scadaPopGradient)" />
 
-        {/* SCADA Generation line (Indigo) */}
+        {/* SCADA Generation line (Violet) */}
         <path
           d={scadaPath}
           fill="none"
-          stroke="#4F46E5"
-          strokeWidth="2.5"
+          stroke="#8B5CF6"
+          strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
 
-        {/* Grid Export line (Emerald) */}
+        {/* Grid Export line (Mint) */}
         <path
           d={gridPath}
           fill="none"
           stroke="#10B981"
-          strokeWidth="2"
-          strokeDasharray="4 3"
+          strokeWidth="2.5"
+          strokeDasharray="5 4"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
@@ -136,23 +137,23 @@ export const TelemetryComparisonChart: React.FC<TelemetryChartProps> = ({
               key={idx}
               cx={x}
               cy={y}
-              r="3.5"
-              fill="#FFFFFF"
-              stroke="#4F46E5"
+              r="4"
+              fill="#FBBF24"
+              stroke="#1E293B"
               strokeWidth="2"
             />
           );
         })}
 
         {/* Legend */}
-        <g transform={`translate(${width - 240}, 16)`}>
-          <line x1="0" y1="0" x2="16" y2="0" stroke="#4F46E5" strokeWidth="2.5" />
-          <text x="22" y="3.5" fontSize="10" fill="#334155" fontWeight="600" fontFamily="Plus Jakarta Sans">
-            Plant Output (MW)
+        <g transform={`translate(${width - 260}, 16)`}>
+          <line x1="0" y1="0" x2="18" y2="0" stroke="#8B5CF6" strokeWidth="3" />
+          <text x="24" y="3.5" fontSize="10" fill="#1E293B" fontWeight="800" fontFamily="Outfit">
+            Inverter Output (MW)
           </text>
           
-          <line x1="120" y1="0" x2="136" y2="0" stroke="#10B981" strokeWidth="2" strokeDasharray="4 3" />
-          <text x="142" y="3.5" fontSize="10" fill="#334155" fontWeight="600" fontFamily="Plus Jakarta Sans">
+          <line x1="135" y1="0" x2="153" y2="0" stroke="#10B981" strokeWidth="2.5" strokeDasharray="5 4" />
+          <text x="159" y="3.5" fontSize="10" fill="#047857" fontWeight="800" fontFamily="Outfit">
             Grid Meter (MW)
           </text>
         </g>
@@ -167,22 +168,22 @@ interface RiskGaugeProps {
 }
 
 export const RiskGauge: React.FC<RiskGaugeProps> = ({ score, size = 80 }) => {
-  const strokeWidth = 7;
+  const strokeWidth = 8;
   const radius = (size - strokeWidth * 2) / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
-  let strokeColor = '#10B981'; // Emerald Safe
-  let bgBadge = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+  let strokeColor = '#10B981'; // Mint Safe
+  let badgeClass = 'pop-badge-mint';
   let label = 'Low Risk';
 
   if (score >= 60) {
-    strokeColor = '#EF4444'; // Rose Red Anomaly
-    bgBadge = 'bg-rose-50 text-rose-700 border-rose-200';
+    strokeColor = '#F472B6'; // Hot Pink Anomaly
+    badgeClass = 'pop-badge-pink';
     label = 'Severe Anomaly';
   } else if (score >= 25) {
-    strokeColor = '#F59E0B'; // Amber Warning
-    bgBadge = 'bg-amber-50 text-amber-700 border-amber-200';
+    strokeColor = '#FBBF24'; // Amber Warning
+    badgeClass = 'pop-badge-yellow';
     label = 'Review Needed';
   }
 
@@ -213,14 +214,14 @@ export const RiskGauge: React.FC<RiskGaugeProps> = ({ score, size = 80 }) => {
         </svg>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="font-display font-extrabold text-base text-slate-900 leading-none">
+          <span className="font-display font-black text-base text-[#1E293B] leading-none">
             {score.toFixed(0)}
           </span>
-          <span className="text-[9px] text-slate-400 font-bold uppercase mt-0.5">Risk</span>
+          <span className="text-[9px] text-[#64748B] font-display font-bold uppercase mt-0.5">Risk</span>
         </div>
       </div>
 
-      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${bgBadge}`}>
+      <span className={`${badgeClass} text-[10px]`}>
         {label}
       </span>
     </div>

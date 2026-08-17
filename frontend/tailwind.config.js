@@ -7,23 +7,33 @@ export default {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: '#EEF2FF',
-          100: '#E0E7FF',
-          200: '#C7D2FE',
-          300: '#A5B4FC',
-          400: '#818CF8',
-          500: '#6366F1',
-          600: '#4F46E5', // Primary Indigo
-          700: '#4338CA',
-          800: '#3730A3',
-          900: '#312E81',
-          950: '#1E1B4B',
+        background: '#FFFDF5', // Warm Cream / Paper feel
+        foreground: '#1E293B', // Slate 800
+        muted: '#F1F5F9',      // Slate 100
+        mutedForeground: '#64748B', // Slate 500
+        accent: {
+          DEFAULT: '#8B5CF6', // Vivid Violet (Primary Brand)
+          hover: '#7C3AED',
+          light: '#EDE9FE',
+          dark: '#6D28D9',
         },
-        violet: {
-          500: '#8B5CF6',
-          600: '#7C3AED', // Secondary Violet
-          700: '#6D28D9',
+        secondary: {
+          DEFAULT: '#F472B6', // Hot Pink (Playful Pop)
+          hover: '#EC4899',
+          light: '#FCE7F3',
+          dark: '#DB2777',
+        },
+        tertiary: {
+          DEFAULT: '#FBBF24', // Amber/Yellow (Optimism)
+          hover: '#F59E0B',
+          light: '#FEF3C7',
+          dark: '#D97706',
+        },
+        quaternary: {
+          DEFAULT: '#34D399', // Mint/Emerald (Freshness)
+          hover: '#10B981',
+          light: '#D1FAE5',
+          dark: '#059669',
         },
         slate: {
           50: '#F8FAFC',
@@ -36,42 +46,59 @@ export default {
           700: '#334155',
           800: '#1E293B',
           900: '#0F172A',
-          950: '#020617',
+          950: '#0B0F17',
         },
-        emerald: {
-          50: '#ECFDF5',
-          500: '#10B981',
-          600: '#059669',
-          700: '#047857',
-        }
       },
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
-        display: ['Inter', '"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        display: ['"Outfit"', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       boxShadow: {
-        'card': '0 4px 20px -2px rgba(79, 70, 229, 0.08)',
-        'card-hover': '0 12px 28px -5px rgba(79, 70, 229, 0.15), 0 8px 10px -6px rgba(79, 70, 229, 0.08)',
-        'primary-btn': '0 4px 14px 0 rgba(79, 70, 229, 0.35)',
-        'primary-btn-hover': '0 6px 20px 0 rgba(79, 70, 229, 0.45)',
-        'emerald-btn': '0 4px 14px 0 rgba(16, 185, 129, 0.35)',
-        'glow': '0 0 20px rgba(79, 70, 229, 0.4)',
+        'pop-xs': '2px 2px 0px 0px #1E293B',
+        'pop-sm': '3px 3px 0px 0px #1E293B',
+        'pop': '4px 4px 0px 0px #1E293B',
+        'pop-hover': '6px 6px 0px 0px #1E293B',
+        'pop-active': '1px 1px 0px 0px #1E293B',
+        'pop-lg': '8px 8px 0px 0px #1E293B',
+        'pop-pink': '5px 5px 0px 0px #F472B6',
+        'pop-yellow': '5px 5px 0px 0px #FBBF24',
+        'pop-mint': '5px 5px 0px 0px #34D399',
+        'pop-violet': '5px 5px 0px 0px #8B5CF6',
+      },
+      borderWidth: {
+        '3': '3px',
       },
       borderRadius: {
-        'xl': '12px',
-        '2xl': '16px',
-        '3xl': '24px',
+        'xl': '16px',
+        '2xl': '20px',
+        '3xl': '28px',
+        'blob-1': '24px 24px 24px 0px',
+        'blob-2': '24px 24px 0px 24px',
+        'blob-arch': '9999px 9999px 16px 16px',
       },
-      animation: {
-        'float': 'float 6s ease-in-out infinite',
-        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      transitionTimingFunction: {
+        'bounce-pop': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
       },
       keyframes: {
-        float: {
+        popIn: {
+          '0%': { transform: 'scale(0.92)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(0deg)' },
+          '25%': { transform: 'rotate(3deg)' },
+          '75%': { transform: 'rotate(-3deg)' },
+        },
+        floatSlow: {
           '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-8px)' },
+          '50%': { transform: 'translateY(-6px)' },
         }
+      },
+      animation: {
+        'pop-in': 'popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+        'wiggle': 'wiggle 0.4s ease-in-out',
+        'float-slow': 'floatSlow 4s ease-in-out infinite',
       }
     },
   },

@@ -17,7 +17,8 @@ import {
   CheckCircle2,
   IndianRupee,
   ShieldCheck,
-  RefreshCw
+  RefreshCw,
+  Sparkles
 } from 'lucide-react';
 
 export const CorporateDashboard: React.FC = () => {
@@ -162,88 +163,88 @@ export const CorporateDashboard: React.FC = () => {
   const previewPoints = computeTelemetryPoints();
 
   return (
-    <div className="space-y-10 animate-fade-in max-w-5xl mx-auto">
+    <div className="space-y-10 animate-pop-in max-w-5xl mx-auto">
       
-      {/* 3 Summary Metric Cards */}
+      {/* 3 Summary Pop Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="trust-card p-6 flex items-center justify-between">
+        <div className="pop-card-violet p-6 flex items-center justify-between">
           <div>
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Available Credits</span>
+            <span className="text-xs font-display font-black text-[#6D28D9] uppercase tracking-wider">Available Credits</span>
             <div className="mt-1 flex items-baseline space-x-2">
-              <span className="font-display font-extrabold text-3xl text-indigo-600 font-mono">{ztcBalance}</span>
-              <span className="text-xs font-bold text-slate-900">ZTC</span>
+              <span className="font-display font-black text-4xl text-[#8B5CF6] font-mono">{ztcBalance}</span>
+              <span className="text-xs font-display font-extrabold text-[#1E293B]">ZTC</span>
             </div>
-            <p className="text-[11px] text-slate-400 mt-0.5">1 ZTC = 1 Ton CO₂ Offset</p>
+            <p className="text-[11px] text-[#64748B] mt-0.5 font-medium">1 ZTC = 1 Ton CO₂ Offset</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm">
-            <Coins className="w-6 h-6" />
+          <div className="w-13 h-13 rounded-2xl bg-[#EDE9FE] border-2 border-[#1E293B] flex items-center justify-center text-[#8B5CF6] shadow-pop-xs">
+            <Coins className="w-7 h-7 stroke-[2.5]" />
           </div>
         </div>
 
-        <div className="trust-card p-6 flex items-center justify-between">
+        <div className="pop-card-yellow p-6 flex items-center justify-between">
           <div>
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Corporate Treasury</span>
+            <span className="text-xs font-display font-black text-[#B45309] uppercase tracking-wider">Corporate Treasury</span>
             <div className="mt-1 flex items-baseline space-x-1">
-              <span className="font-display font-extrabold text-2xl text-slate-900 font-mono">{inrBalance}</span>
+              <span className="font-display font-black text-3xl text-[#1E293B] font-mono">{inrBalance}</span>
             </div>
-            <p className="text-[11px] text-slate-400 mt-0.5">Operational Settlement Balance</p>
+            <p className="text-[11px] text-[#64748B] mt-0.5 font-medium">Operational Settlement Balance</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-700 shadow-sm">
-            <IndianRupee className="w-6 h-6" />
+          <div className="w-13 h-13 rounded-2xl bg-[#FEF3C7] border-2 border-[#1E293B] flex items-center justify-center text-[#B45309] shadow-pop-xs">
+            <IndianRupee className="w-7 h-7 stroke-[2.5]" />
           </div>
         </div>
 
-        <div className="trust-card p-6 flex items-center justify-between">
+        <div className="pop-card-mint p-6 flex items-center justify-between">
           <div>
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Verified Generation</span>
+            <span className="text-xs font-display font-black text-[#047857] uppercase tracking-wider">Verified Generation</span>
             <div className="mt-1 flex items-baseline space-x-2">
-              <span className="font-display font-extrabold text-3xl text-emerald-600 font-mono">
+              <span className="font-display font-black text-4xl text-[#059669] font-mono">
                 {claims.reduce((acc, c) => acc + (c.status === 'MINTED' || c.status === 'APPROVED' ? c.validated_mwh : 0), 0).toFixed(1)}
               </span>
-              <span className="text-xs font-bold text-slate-900">MWh</span>
+              <span className="text-xs font-display font-extrabold text-[#1E293B]">MWh</span>
             </div>
-            <p className="text-[11px] text-slate-400 mt-0.5">Substation Meter Verified</p>
+            <p className="text-[11px] text-[#64748B] mt-0.5 font-medium">Substation Meter Verified</p>
           </div>
-          <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm">
-            <Zap className="w-6 h-6" />
+          <div className="w-13 h-13 rounded-2xl bg-[#D1FAE5] border-2 border-[#1E293B] flex items-center justify-center text-[#059669] shadow-pop-xs">
+            <Zap className="w-7 h-7 stroke-[2.5]" />
           </div>
         </div>
       </div>
 
       {/* Step 1: Submit Energy Generation */}
-      <div className="trust-card p-8 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-3">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm">
-              <UploadCloud className="w-5 h-5" />
+      <div className="pop-card p-8 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b-2 border-[#E2E8F0] gap-3">
+          <div className="flex items-center space-x-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-[#EDE9FE] border-2 border-[#1E293B] flex items-center justify-center text-[#8B5CF6] shadow-pop-xs">
+              <UploadCloud className="w-6 h-6 stroke-[2.5]" />
             </div>
             <div>
-              <h2 className="font-display font-extrabold text-base text-slate-900">Step 1: Submit Solar PV Generation</h2>
-              <p className="text-xs text-slate-500">Record plant inverter output and grid substation meter reading</p>
+              <h2 className="font-display font-black text-lg text-[#1E293B]">Step 1: Submit Solar PV Generation</h2>
+              <p className="text-xs text-[#64748B] font-medium">Record plant inverter output and grid substation meter reading</p>
             </div>
           </div>
         </div>
 
         {/* Plant Selector */}
         <div>
-          <label className="text-xs font-bold text-slate-700 block mb-2">Select Solar Asset</label>
+          <label className="text-xs font-display font-black text-[#1E293B] block mb-2 uppercase tracking-wide">Select Solar Asset</label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {projects.map((p) => (
               <button
                 key={p.id}
                 type="button"
                 onClick={() => setSelectedProjectId(p.id)}
-                className={`p-3.5 rounded-xl text-left text-xs transition-all border ${
+                className={`p-4 rounded-2xl text-left text-xs transition-all border-2 ${
                   selectedProjectId === p.id
-                    ? 'bg-amber-50/80 border-amber-300 text-amber-900 font-bold shadow-sm'
-                    : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                    ? 'bg-[#FEF3C7] border-[#1E293B] text-[#1E293B] font-bold shadow-pop-xs translate-x-[-1px] translate-y-[-1px]'
+                    : 'bg-white border-[#CBD5E1] text-[#1E293B] hover:border-[#1E293B]'
                 }`}
               >
                 <div className="flex items-center space-x-2">
-                  <Sun className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                  <p className="font-bold truncate">{p.name.split('(')[0]}</p>
+                  <Sun className="w-4 h-4 text-[#F59E0B] stroke-[2.5] flex-shrink-0" />
+                  <p className="font-display font-black truncate">{p.name.split('(')[0]}</p>
                 </div>
-                <p className="text-[10px] text-slate-500 font-mono mt-1">{p.peak_capacity_mw} MW &bull; {p.location.split(',')[0]}</p>
+                <p className="text-[11px] text-[#64748B] font-mono mt-1">{p.peak_capacity_mw} MW &bull; {p.location.split(',')[0]}</p>
               </button>
             ))}
           </div>
@@ -252,7 +253,7 @@ export const CorporateDashboard: React.FC = () => {
         {/* Input Fields */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label className="text-xs font-bold text-slate-700 block mb-1">Active Output (MWh)</label>
+            <label className="text-xs font-display font-black text-[#1E293B] block mb-1">Active Output (MWh)</label>
             <input
               type="number"
               step="10"
@@ -265,30 +266,30 @@ export const CorporateDashboard: React.FC = () => {
                   setGridExportMWh((num * 0.975).toFixed(1));
                 }
               }}
-              className="w-full trust-input font-mono"
+              className="w-full pop-input font-mono"
               required
             />
           </div>
 
           <div>
-            <label className="text-xs font-bold text-slate-700 block mb-1">Grid Export Meter (MWh)</label>
+            <label className="text-xs font-display font-black text-[#1E293B] block mb-1">Grid Export Meter (MWh)</label>
             <input
               type="number"
               step="10"
               value={gridExportMWh}
               onChange={(e) => setGridExportMWh(e.target.value)}
-              className="w-full trust-input font-mono"
+              className="w-full pop-input font-mono"
               required
             />
           </div>
 
           <div>
-            <label className="text-xs font-bold text-slate-700 block mb-1">Vintage Year</label>
+            <label className="text-xs font-display font-black text-[#1E293B] block mb-1">Vintage Year</label>
             <input
               type="number"
               value={vintageYear}
               onChange={(e) => setVintageYear(parseInt(e.target.value) || 2026)}
-              className="w-full trust-input font-mono"
+              className="w-full pop-input font-mono"
               required
             />
           </div>
@@ -297,10 +298,10 @@ export const CorporateDashboard: React.FC = () => {
         {/* Live Diurnal Solar Curve Preview */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-slate-700">
+            <span className="text-xs font-display font-black text-[#1E293B]">
               24-Hour Diurnal Solar Distribution (Live Model Preview)
             </span>
-            <span className="text-[10px] font-mono text-slate-400">Indigo: Plant Inverters | Emerald: Substation Meter</span>
+            <span className="text-[11px] font-mono text-[#64748B]">Violet: Inverters | Mint: Grid Meter (2.5% loss)</span>
           </div>
           <TelemetryComparisonChart dataPoints={previewPoints} height={180} />
         </div>
@@ -309,16 +310,16 @@ export const CorporateDashboard: React.FC = () => {
           <button
             onClick={handleIngestTelemetry}
             disabled={ingesting}
-            className="trust-btn-primary px-8 py-3.5 text-xs flex items-center space-x-2"
+            className="pop-btn-primary px-8 py-3.5 text-xs flex items-center space-x-2"
           >
             {ingesting ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin stroke-[2.5]" />
                 <span>Submitting Generation...</span>
               </>
             ) : (
               <>
-                <UploadCloud className="w-4 h-4" />
+                <UploadCloud className="w-4 h-4 stroke-[2.5]" />
                 <span>Submit Generation for Auditor Approval</span>
               </>
             )}
@@ -327,38 +328,38 @@ export const CorporateDashboard: React.FC = () => {
       </div>
 
       {/* Step 2: Approved Claims & Minting */}
-      <div className="trust-card p-8 space-y-5">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+      <div className="pop-card p-8 space-y-5">
+        <div className="flex items-center justify-between pb-3 border-b-2 border-[#E2E8F0]">
           <div>
-            <h2 className="font-display font-extrabold text-base text-slate-900">Step 2: Approved Claims & Minting</h2>
-            <p className="text-xs text-slate-500">When an auditor approves your batch, click "Mint" to receive tokens.</p>
+            <h2 className="font-display font-black text-lg text-[#1E293B]">Step 2: Approved Claims & Minting</h2>
+            <p className="text-xs text-[#64748B] font-medium">When an auditor approves your batch, click "Mint" to receive tokens.</p>
           </div>
-          <button onClick={loadData} className="trust-btn-secondary px-4 py-2 text-xs flex items-center space-x-1.5">
-            <RefreshCw className="w-3.5 h-3.5" />
+          <button onClick={loadData} className="pop-btn-secondary px-4 py-2 text-xs flex items-center space-x-1.5">
+            <RefreshCw className="w-3.5 h-3.5 stroke-[2.5]" />
             <span>Refresh</span>
           </button>
         </div>
 
         {claims.length === 0 ? (
-          <p className="text-xs text-slate-400 text-center py-6">No submitted claims yet. Use Step 1 above to submit.</p>
+          <p className="text-xs text-[#64748B] text-center py-6 font-medium">No submitted claims yet. Use Step 1 above to submit.</p>
         ) : (
           <div className="space-y-3">
             {claims.map((claim) => (
               <div
                 key={claim.id}
-                className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="p-5 rounded-2xl bg-white border-2 border-[#1E293B] shadow-pop-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div>
                   <div className="flex items-center space-x-2">
-                    <span className="font-mono font-bold text-xs text-slate-900">{claim.claim_uid}</span>
-                    <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold ${
-                      claim.status === 'MINTED' ? 'trust-badge-emerald' : claim.status === 'APPROVED' ? 'trust-badge-indigo' : claim.status === 'REJECTED' ? 'trust-badge-rose' : 'trust-badge-amber'
-                    }`}>
+                    <span className="font-mono font-bold text-xs text-[#1E293B]">{claim.claim_uid}</span>
+                    <span className={
+                      claim.status === 'MINTED' ? 'pop-badge-mint' : claim.status === 'APPROVED' ? 'pop-badge-violet' : claim.status === 'REJECTED' ? 'pop-badge-pink' : 'pop-badge-yellow'
+                    }>
                       {claim.status}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 mt-1">
-                    {claim.project_name} &bull; {claim.requested_mwh.toFixed(1)} MWh &bull; <strong className="text-emerald-600 font-mono">{claim.co2_offset_tonnes.toFixed(2)} ZTC</strong>
+                  <p className="text-xs text-[#64748B] mt-1 font-medium">
+                    {claim.project_name} &bull; {claim.requested_mwh.toFixed(1)} MWh &bull; <strong className="text-[#047857] font-mono font-black">{claim.co2_offset_tonnes.toFixed(2)} ZTC</strong>
                   </p>
                 </div>
 
@@ -367,24 +368,24 @@ export const CorporateDashboard: React.FC = () => {
                     <button
                       onClick={() => handleMintClaim(claim)}
                       disabled={mintingClaimId === claim.id}
-                      className="trust-btn-primary px-5 py-2 text-xs flex items-center space-x-1.5 shadow-sm"
+                      className="pop-btn-primary px-5 py-2 text-xs flex items-center space-x-1.5"
                     >
-                      <ArrowUpRight className="w-3.5 h-3.5" />
+                      <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
                       <span>Mint Tokens to Wallet</span>
                     </button>
                   )}
 
                   {claim.status === 'MINTED' && (
-                    <div className="flex items-center space-x-2 text-xs text-emerald-700 font-semibold bg-emerald-50 border border-emerald-200/80 px-3 py-1.5 rounded-xl">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <div className="flex items-center space-x-2 text-xs text-[#047857] font-bold bg-[#D1FAE5] border-2 border-[#1E293B] px-3.5 py-1.5 rounded-full shadow-pop-xs">
+                      <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
                       <span>Minted on-chain {claim.tx_hash ? `(${claim.tx_hash.slice(0, 6)}...${claim.tx_hash.slice(-4)})` : ''}</span>
                     </div>
                   )}
 
                   {claim.status === 'PENDING_REVIEW' && (
                     <div className="flex items-center space-x-2">
-                      <span className="text-xs text-amber-600 font-medium flex items-center space-x-1 bg-amber-50 border border-amber-200/60 px-3 py-1.5 rounded-xl">
-                        <Clock className="w-3.5 h-3.5 text-amber-500" />
+                      <span className="pop-badge-yellow text-xs">
+                        <Clock className="w-3.5 h-3.5 stroke-[2.5]" />
                         <span>Pending Auditor Review</span>
                       </span>
                     </div>
@@ -393,10 +394,10 @@ export const CorporateDashboard: React.FC = () => {
                   {claim.ipfs_cid && (
                     <button
                       onClick={() => setSelectedIPFSCid(claim.ipfs_cid!)}
-                      className="trust-btn-secondary p-2 text-indigo-600"
+                      className="pop-btn-secondary p-2 text-[#8B5CF6]"
                       title="View IPFS Audit Document"
                     >
-                      <Database className="w-3.5 h-3.5" />
+                      <Database className="w-4 h-4 stroke-[2.5]" />
                     </button>
                   )}
                 </div>

@@ -7,11 +7,8 @@ import {
   Layers, 
   ShieldCheck, 
   Database, 
-  FileText, 
-  ExternalLink, 
   Search, 
   CheckCircle2, 
-  AlertTriangle, 
   Sun, 
   Zap, 
   Flame, 
@@ -67,34 +64,32 @@ export const Explorer: React.FC = () => {
   );
 
   return (
-    <div className="space-y-10 animate-fade-in max-w-5xl mx-auto">
+    <div className="space-y-10 animate-pop-in max-w-5xl mx-auto">
       
       {/* Header Banner */}
-      <div className="trust-card p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-        <div>
-          <div className="flex items-center space-x-3">
-            <div className="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm">
-              <Globe className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="font-display font-extrabold text-xl text-slate-900">Public Transparency & Audit Registry</h1>
-              <p className="text-xs text-slate-500">
-                Verifiable on-chain carbon registry &bull; Cryptographic IPFS audit documents &bull; Permanent offset receipts
-              </p>
-            </div>
+      <div className="pop-card-violet p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 bg-white">
+        <div className="flex items-center space-x-3.5">
+          <div className="w-13 h-13 rounded-2xl bg-[#EDE9FE] border-2 border-[#1E293B] flex items-center justify-center text-[#8B5CF6] shadow-pop-xs">
+            <Globe className="w-7 h-7 stroke-[2.5]" />
+          </div>
+          <div>
+            <h1 className="font-display font-black text-2xl text-[#1E293B]">Public Transparency & Audit Registry</h1>
+            <p className="text-xs text-[#64748B] font-medium">
+              Verifiable on-chain carbon ledger &bull; Cryptographic W3C JSON-LD reports &bull; Permanent offset receipts
+            </p>
           </div>
         </div>
       </div>
 
       {/* Subtabs and Search */}
-      <div className="trust-card p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="pop-card p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white">
         
         {/* Navigation Tabs */}
-        <div className="flex items-center space-x-1.5 p-1 bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold w-full sm:w-auto justify-center">
+        <div className="flex items-center space-x-2 p-1.5 bg-[#F1F5F9] border-2 border-[#1E293B] rounded-full text-xs font-display font-black w-full sm:w-auto justify-center">
           <button
             onClick={() => setActiveSubTab('PROJECTS')}
-            className={`px-4 py-2 rounded-lg transition-all ${
-              activeSubTab === 'PROJECTS' ? 'bg-white text-indigo-600 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
+            className={`px-4 py-2 rounded-full transition-all ${
+              activeSubTab === 'PROJECTS' ? 'bg-[#8B5CF6] text-white border-2 border-[#1E293B] shadow-pop-xs' : 'text-[#1E293B] hover:text-[#8B5CF6]'
             }`}
           >
             Registered Assets ({projects.length})
@@ -102,8 +97,8 @@ export const Explorer: React.FC = () => {
 
           <button
             onClick={() => setActiveSubTab('CLAIMS')}
-            className={`px-4 py-2 rounded-lg transition-all ${
-              activeSubTab === 'CLAIMS' ? 'bg-white text-indigo-600 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
+            className={`px-4 py-2 rounded-full transition-all ${
+              activeSubTab === 'CLAIMS' ? 'bg-[#34D399] text-[#1E293B] border-2 border-[#1E293B] shadow-pop-xs' : 'text-[#1E293B] hover:text-[#047857]'
             }`}
           >
             Claims Ledger ({claims.length})
@@ -111,8 +106,8 @@ export const Explorer: React.FC = () => {
 
           <button
             onClick={() => setActiveSubTab('RETIREMENTS')}
-            className={`px-4 py-2 rounded-lg transition-all ${
-              activeSubTab === 'RETIREMENTS' ? 'bg-white text-indigo-600 shadow-sm font-bold' : 'text-slate-600 hover:text-slate-900'
+            className={`px-4 py-2 rounded-full transition-all ${
+              activeSubTab === 'RETIREMENTS' ? 'bg-[#F472B6] text-white border-2 border-[#1E293B] shadow-pop-xs' : 'text-[#1E293B] hover:text-[#DB2777]'
             }`}
           >
             Retirements ({retirements.length})
@@ -121,13 +116,13 @@ export const Explorer: React.FC = () => {
 
         {/* Search */}
         <div className="relative w-full sm:w-72">
-          <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3.5 top-3 w-4 h-4 text-[#64748B] stroke-[2.5]" />
           <input
             type="text"
             placeholder="Search registry..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full trust-input pl-10 text-xs"
+            className="w-full pop-input pl-10 text-xs"
           />
         </div>
 
@@ -135,62 +130,58 @@ export const Explorer: React.FC = () => {
 
       {/* Tab 1: Registered Projects Portfolio */}
       {activeSubTab === 'PROJECTS' && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((proj) => {
-            const isSolar = proj.project_type.toLowerCase().includes('solar');
-
-            return (
-              <div
-                key={proj.id}
-                className="trust-card-hover p-8 flex flex-col justify-between space-y-5 transition-all duration-200"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-start justify-between">
-                    <div className="w-11 h-11 rounded-2xl flex items-center justify-center bg-amber-50 text-amber-600 border border-amber-100">
-                      <Sun className="w-5 h-5" />
-                    </div>
-                    <span className="trust-badge-emerald px-2.5 py-0.5 text-[10px]">
-                      Verified Asset
-                    </span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProjects.map((proj) => (
+            <div
+              key={proj.id}
+              className="pop-card-yellow p-7 flex flex-col justify-between space-y-5 bg-white"
+            >
+              <div className="space-y-4">
+                <div className="flex items-start justify-between">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[#FEF3C7] text-[#B45309] border-2 border-[#1E293B] shadow-pop-xs">
+                    <Sun className="w-6 h-6 stroke-[2.5]" />
                   </div>
+                  <span className="pop-badge-mint text-[10px]">
+                    Verified Asset
+                  </span>
+                </div>
 
-                  <div>
-                    <h3 className="font-display font-extrabold text-base text-slate-900">{proj.name}</h3>
-                    <div className="flex items-center space-x-1 text-xs text-slate-500 mt-1">
-                      <MapPin className="w-3.5 h-3.5 text-indigo-600" />
-                      <span>{proj.location}</span>
-                    </div>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 grid grid-cols-2 gap-3 text-xs">
-                    <div>
-                      <span className="text-[10px] text-slate-400 uppercase font-bold">Capacity</span>
-                      <p className="font-mono font-bold text-slate-900 mt-0.5">{proj.peak_capacity_mw} MW</p>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-slate-400 uppercase font-bold">Type</span>
-                      <p className="font-mono font-bold text-indigo-600 mt-0.5">{proj.project_type}</p>
-                    </div>
+                <div>
+                  <h3 className="font-display font-black text-lg text-[#1E293B]">{proj.name}</h3>
+                  <div className="flex items-center space-x-1 text-xs text-[#64748B] mt-1 font-medium">
+                    <MapPin className="w-3.5 h-3.5 text-[#F59E0B] stroke-[2.5]" />
+                    <span>{proj.location}</span>
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-mono text-slate-500">
-                  <span>Code: {proj.project_code}</span>
-                  <span className="text-emerald-600 font-bold">Factor: 0.716 tCO₂/MWh</span>
+                <div className="p-4 rounded-2xl bg-[#FFFDF5] border-2 border-[#1E293B] grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <span className="text-[10px] text-[#64748B] uppercase font-display font-black">Capacity</span>
+                    <p className="font-mono font-black text-base text-[#1E293B] mt-0.5">{proj.peak_capacity_mw} MW</p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-[#64748B] uppercase font-display font-black">Type</span>
+                    <p className="font-mono font-bold text-xs text-[#1E293B] mt-0.5">{proj.project_type}</p>
+                  </div>
                 </div>
               </div>
-            );
-          })}
+
+              <div className="pt-3 border-t-2 border-[#E2E8F0] flex items-center justify-between text-[11px] font-mono text-[#64748B]">
+                <span>Code: {proj.project_code}</span>
+                <span className="text-[#047857] font-black">0.716 tCO₂/MWh</span>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
       {/* Tab 2: Claims Ledger */}
       {activeSubTab === 'CLAIMS' && (
-        <div className="trust-card p-6 space-y-4">
+        <div className="pop-card p-6 space-y-4 bg-white">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-slate-200 text-slate-400 uppercase text-[10px] tracking-wider font-bold">
+                <tr className="border-b-2 border-[#1E293B] text-[#1E293B] uppercase text-[10px] tracking-wider font-display font-black">
                   <th className="py-3 px-3">Claim UID</th>
                   <th className="py-3 px-3">Plant</th>
                   <th className="py-3 px-3">Producer Wallet</th>
@@ -201,45 +192,47 @@ export const Explorer: React.FC = () => {
                   <th className="py-3 px-3">Audit Report</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y-2 divide-[#E2E8F0]">
                 {filteredClaims.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="py-8 text-center text-slate-400">
+                    <td colSpan={8} className="py-8 text-center text-[#64748B] font-medium">
                       No claims recorded in ledger yet.
                     </td>
                   </tr>
                 ) : (
                   filteredClaims.map((claim) => (
-                    <tr key={claim.id} className="hover:bg-slate-50/80 transition">
-                      <td className="py-3 px-3 font-mono font-bold text-slate-900">{claim.claim_uid}</td>
-                      <td className="py-3 px-3 font-bold text-slate-900">{claim.project_name}</td>
-                      <td className="py-3 px-3 font-mono text-slate-500">
+                    <tr key={claim.id} className="hover:bg-[#FEF3C7]/40 transition">
+                      <td className="py-3.5 px-3 font-mono font-black text-[#1E293B]">{claim.claim_uid}</td>
+                      <td className="py-3.5 px-3 font-display font-bold text-[#1E293B]">{claim.project_name}</td>
+                      <td className="py-3.5 px-3 font-mono text-[#64748B]">
                         {claim.corporate_wallet.slice(0, 6)}...{claim.corporate_wallet.slice(-4)}
                       </td>
-                      <td className="py-3 px-3 font-mono text-slate-900">{claim.validated_mwh.toFixed(1)} MWh</td>
-                      <td className="py-3 px-3 font-mono font-bold text-emerald-600">
+                      <td className="py-3.5 px-3 font-mono font-bold text-[#1E293B]">{claim.validated_mwh.toFixed(1)} MWh</td>
+                      <td className="py-3.5 px-3 font-mono font-black text-[#047857]">
                         {claim.co2_offset_tonnes.toFixed(2)} ZTC
                       </td>
-                      <td className="py-3 px-3">
-                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                          claim.risk_score < 25 ? 'trust-badge-emerald' : claim.risk_score < 60 ? 'trust-badge-amber' : 'trust-badge-rose'
+                      <td className="py-3.5 px-3">
+                        <span className={`px-2 py-0.5 rounded-full border border-[#1E293B] text-[10px] font-display font-black ${
+                          claim.risk_score < 25 ? 'bg-[#D1FAE5] text-[#047857]' : claim.risk_score < 60 ? 'bg-[#FEF3C7] text-[#B45309]' : 'bg-[#FCE7F3] text-[#DB2777]'
                         }`}>
                           {claim.risk_score.toFixed(0)}
                         </span>
                       </td>
-                      <td className="py-3 px-3">
-                        <span className="trust-badge-indigo px-2.5 py-0.5 text-[10px] uppercase font-bold">
+                      <td className="py-3.5 px-3">
+                        <span className={
+                          claim.status === 'MINTED' ? 'pop-badge-mint' : claim.status === 'APPROVED' ? 'pop-badge-violet' : 'pop-badge-yellow'
+                        }>
                           {claim.status}
                         </span>
                       </td>
-                      <td className="py-3 px-3">
+                      <td className="py-3.5 px-3">
                         {claim.ipfs_cid && (
                           <button
                             onClick={() => setSelectedIPFSCid(claim.ipfs_cid!)}
-                            className="trust-btn-secondary p-1.5 text-xs text-indigo-600"
+                            className="pop-btn-secondary p-1.5 text-xs text-[#8B5CF6]"
                             title="View IPFS Document"
                           >
-                            <Database className="w-3.5 h-3.5" />
+                            <Database className="w-3.5 h-3.5 stroke-[2.5]" />
                           </button>
                         )}
                       </td>
@@ -256,7 +249,7 @@ export const Explorer: React.FC = () => {
       {activeSubTab === 'RETIREMENTS' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filteredRetirements.length === 0 ? (
-            <div className="col-span-full trust-card p-12 text-center text-slate-400 text-xs">
+            <div className="col-span-full pop-card p-12 text-center text-[#64748B] text-xs bg-white">
               No permanent offset retirements recorded yet.
             </div>
           ) : (
@@ -264,26 +257,26 @@ export const Explorer: React.FC = () => {
               <div
                 key={ret.certificate_id}
                 onClick={() => setSelectedRetirement(ret)}
-                className="trust-card-hover p-6 cursor-pointer flex items-center justify-between group"
+                className="pop-card-pink p-6 cursor-pointer flex items-center justify-between group bg-white hover:scale-[1.01]"
               >
                 <div className="space-y-1">
                   <div className="flex items-center space-x-2">
-                    <span className="font-display font-extrabold text-sm text-slate-900 group-hover:text-indigo-600 transition">
+                    <span className="font-display font-black text-base text-[#1E293B] group-hover:text-[#DB2777] transition">
                       {ret.corporate_beneficiary}
                     </span>
-                    <span className="trust-badge-emerald px-2 py-0.5 text-[9px]">
+                    <span className="pop-badge-mint text-[9px]">
                       Retired
                     </span>
                   </div>
-                  <p className="text-xs text-slate-500">{ret.reason || 'Clean Energy Offset'}</p>
-                  <p className="text-[10px] font-mono text-slate-400">ID: {ret.certificate_id.slice(0, 18)}...</p>
+                  <p className="text-xs text-[#64748B] font-medium">{ret.reason || 'Corporate Sustainability Offset'}</p>
+                  <p className="text-[10px] font-mono text-[#64748B]">ID: {ret.certificate_id.slice(0, 18)}...</p>
                 </div>
 
                 <div className="text-right">
-                  <span className="font-display font-extrabold text-xl text-emerald-600 font-mono">
-                    {ret.amount_tonnes.toFixed(1)} <span className="text-xs font-sans">Tons</span>
+                  <span className="font-display font-black text-2xl text-[#047857] font-mono">
+                    {ret.amount_tonnes.toFixed(1)} <span className="text-xs font-display">Tons</span>
                   </span>
-                  <p className="text-[10px] text-slate-400">
+                  <p className="text-[10px] text-[#64748B] font-mono mt-0.5">
                     {new Date(ret.timestamp).toLocaleDateString()}
                   </p>
                 </div>
