@@ -40,7 +40,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectRole, onOpenLo
       id: 'auditor',
       tab: 'verifier',
       accountIndex: 1,
-      title: 'Independent Auditor',
+      title: 'Government Auditor',
       organization: 'Bureau Veritas Sustainability',
       icon: ShieldCheck,
       iconColor: 'text-[#047857]',

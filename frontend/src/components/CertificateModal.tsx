@@ -348,14 +348,14 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({ retirement, 
             {/* 6. Bottom Signatures & Seal Bar */}
             <div className="pt-3 mt-2.5 border-t border-[#E7D7B8] flex items-center justify-between gap-2">
               
-              {/* Left Signatory: Independent Auditor */}
+              {/* Left Signatory: Government Auditor */}
               <div className="text-left space-y-0.5">
                 <div className="font-serif italic font-bold text-xs sm:text-sm text-slate-800">
                   Bureau Veritas Sustainability
                 </div>
                 <div className="w-28 sm:w-36 h-0.5 bg-slate-300 my-0.5" />
                 <p className="text-[8px] sm:text-[9px] font-bold text-[#8C6D32] uppercase tracking-wider">
-                  Independent Verification Auditor
+                  Government Verification Auditor
                 </p>
                 <p className="text-[8px] font-mono text-slate-400">
                   EIP-712 Cryptographic Signature

@@ -36,7 +36,7 @@ export const WalkthroughGuide: React.FC<WalkthroughGuideProps> = ({ activeTab, s
     {
       num: '2',
       title: 'Auditor Approval',
-      role: 'Independent Auditor',
+      role: 'Government Auditor',
       tab: 'verifier',
       accountIndex: 1, // Bureau Veritas Verifier
       icon: ShieldCheck,

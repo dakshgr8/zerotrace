@@ -38,7 +38,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSucce
     {
       index: 1,
       tab: 'verifier',
-      title: 'Independent Auditor',
+      title: 'Government Auditor',
       name: DEMO_ACCOUNTS[1].name,
       description: 'Review AI multi-sensor anomaly detection, verify grid meters, and issue digital signatures.',
       icon: ShieldCheck,

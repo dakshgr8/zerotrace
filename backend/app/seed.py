@@ -24,7 +24,7 @@ def seed_database():
 
     verifier_user = models.User(
         wallet_address="0x70997970c51812dc3a010c7d01b50e0d17dc79c8", # Hardhat Account #1 (Oracle Signer)
-        organization_name="Bureau Veritas / SGS Independent MRV Assurance",
+        organization_name="Bureau Veritas / SGS Government MRV Assurance",
         compliance_registry_id="AUD-VCS-VERA-004",
         role=models.UserRole.VERIFIER
     )

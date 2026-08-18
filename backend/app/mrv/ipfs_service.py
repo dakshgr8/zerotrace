@@ -58,7 +58,7 @@ class IPFSService:
             "issuer": {
                 "id": f"did:pkh:eip155:31337:{verifier_address}",
                 "name": "ZeroTrace Autonomous AI-MRV Verifier & HITL Oracle",
-                "role": "Accredited Independent Verifier"
+                "role": "Accredited Government Auditor"
             },
             "issuanceDate": batch.created_at.isoformat() if hasattr(batch, 'created_at') and batch.created_at else "",
             "credentialSubject": {

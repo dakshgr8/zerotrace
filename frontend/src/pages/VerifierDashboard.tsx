@@ -101,7 +101,7 @@ export const VerifierDashboard: React.FC = () => {
           <div>
             <h1 className="font-display font-black text-2xl text-[#1E293B]">Auditor Verification & Decision Hub</h1>
             <p className="text-xs text-[#64748B] font-medium">
-              Bureau Veritas Sustainability &bull; Independent Verification Body &bull; Non-Custodial Signer
+              Bureau Veritas Sustainability &bull; Government Verification Body &bull; Non-Custodial Signer
             </p>
           </div>
         </div>

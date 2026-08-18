@@ -37,7 +37,7 @@ export const DEMO_ACCOUNTS = [
     role: 'CORPORATE' as const,
   },
   {
-    name: 'Bureau Veritas (Independent Auditor)',
+    name: 'Bureau Veritas (Government Auditor)',
     address: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
     privateKey: '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d',
     role: 'VERIFIER' as const,
