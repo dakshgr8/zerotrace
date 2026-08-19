@@ -89,6 +89,30 @@ export const VerifierDashboard: React.FC = () => {
     }
   };
 
+  const getDiscrepancyInfo = (claim: Claim) => {
+    const outputMWh = claim.ai_metrics?.scada_total_mwh ?? claim.requested_mwh ?? 0;
+    const meterMWh = claim.ai_metrics?.grid_export_total_mwh ?? claim.validated_mwh ?? 0;
+    let diffPct = 0;
+    if (claim.ai_metrics?.disparity_pct !== undefined && claim.ai_metrics.disparity_pct !== null) {
+      diffPct = Math.abs(claim.ai_metrics.disparity_pct);
+    } else if (outputMWh > 0) {
+      diffPct = Math.abs((outputMWh - meterMWh) / outputMWh) * 100;
+    }
+
+    const isAnomaly = diffPct > 10.0 || claim.risk_score >= 60;
+    const isSafe = diffPct <= 10.0 && claim.risk_score < 25;
+
+    return {
+      outputMWh,
+      meterMWh,
+      diffPct,
+      isAnomaly,
+      isSafe
+    };
+  };
+
+  const selectedInfo = selectedClaim ? getDiscrepancyInfo(selectedClaim) : null;
+
   return (
     <div className="space-y-8 animate-pop-in max-w-5xl mx-auto">
       
@@ -139,34 +163,37 @@ export const VerifierDashboard: React.FC = () => {
           </span>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {pendingClaims.map((claim) => (
-              <button
-                key={claim.id}
-                onClick={() => setSelectedClaim(claim)}
-                className={`p-4 rounded-2xl text-left transition-all border-2 ${
-                  selectedClaim?.id === claim.id
-                    ? 'bg-[#8B5CF6] text-white font-bold border-[#1E293B] shadow-pop-xs translate-x-[-1px] translate-y-[-1px]'
-                    : 'bg-white border-[#1E293B] text-[#1E293B] hover:bg-[#FEF3C7] shadow-pop-xs'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold">{claim.claim_uid}</span>
-                  <span className={`text-[9px] px-2 py-0.5 rounded-full border border-[#1E293B] font-display font-black ${
-                    claim.risk_score >= 60 ? 'bg-[#FCE7F3] text-[#DB2777]' : 'bg-[#D1FAE5] text-[#047857]'
-                  }`}>
-                    {claim.risk_score < 25 ? 'AI Safe' : 'AI Flagged'}
-                  </span>
-                </div>
-                <p className={`text-xs mt-1 font-medium ${selectedClaim?.id === claim.id ? 'text-white' : 'text-[#64748B]'}`}>{claim.project_name}</p>
-                <p className={`font-mono font-black text-xs mt-1 ${selectedClaim?.id === claim.id ? 'text-[#FDE68A]' : 'text-[#047857]'}`}>{claim.co2_offset_tonnes.toFixed(1)} ZTC</p>
-              </button>
-            ))}
+            {pendingClaims.map((claim) => {
+              const claimInfo = getDiscrepancyInfo(claim);
+              return (
+                <button
+                  key={claim.id}
+                  onClick={() => setSelectedClaim(claim)}
+                  className={`p-4 rounded-2xl text-left transition-all border-2 ${
+                    selectedClaim?.id === claim.id
+                      ? 'bg-[#8B5CF6] text-white font-bold border-[#1E293B] shadow-pop-xs translate-x-[-1px] translate-y-[-1px]'
+                      : 'bg-white border-[#1E293B] text-[#1E293B] hover:bg-[#FEF3C7] shadow-pop-xs'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-xs font-bold">{claim.claim_uid}</span>
+                    <span className={`text-[9px] px-2 py-0.5 rounded-full border border-[#1E293B] font-display font-black ${
+                      claimInfo.isAnomaly ? 'bg-[#FCE7F3] text-[#DB2777]' : 'bg-[#D1FAE5] text-[#047857]'
+                    }`}>
+                      {claimInfo.isAnomaly ? 'AI Anomaly' : 'AI Safe'}
+                    </span>
+                  </div>
+                  <p className={`text-xs mt-1 font-medium ${selectedClaim?.id === claim.id ? 'text-white' : 'text-[#64748B]'}`}>{claim.project_name}</p>
+                  <p className={`font-mono font-black text-xs mt-1 ${selectedClaim?.id === claim.id ? 'text-[#FDE68A]' : 'text-[#047857]'}`}>{claim.co2_offset_tonnes.toFixed(1)} ZTC</p>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
 
       {/* Claim Inspector & AI Decision Engine */}
-      {selectedClaim ? (
+      {selectedClaim && selectedInfo ? (
         <div className="pop-card p-8 space-y-7 bg-white">
           
           {/* Header */}
@@ -175,9 +202,9 @@ export const VerifierDashboard: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <h2 className="font-display font-black text-xl text-[#1E293B]">{selectedClaim.claim_uid}</h2>
                 <span className={
-                  selectedClaim.risk_score < 25 ? 'pop-badge-mint' : selectedClaim.risk_score < 60 ? 'pop-badge-yellow' : 'pop-badge-pink'
+                  selectedInfo.isAnomaly ? 'pop-badge-pink' : selectedInfo.isSafe ? 'pop-badge-mint' : 'pop-badge-yellow'
                 }>
-                  {selectedClaim.risk_score < 25 ? 'Safe to Approve' : selectedClaim.risk_score < 60 ? 'Review Needed' : 'Fraud Detected'}
+                  {selectedInfo.isAnomaly ? 'Anomaly Detected' : selectedInfo.isSafe ? 'Safe to Approve' : 'Review Needed'}
                 </span>
               </div>
               <p className="text-xs text-[#64748B] mt-0.5 font-medium">
@@ -198,37 +225,83 @@ export const VerifierDashboard: React.FC = () => {
 
           {/* AI Decision Intelligence Banner */}
           <div className={`p-5 rounded-2xl border-2 border-[#1E293B] space-y-2.5 shadow-pop-xs ${
-            selectedClaim.risk_score < 25 
-              ? 'bg-[#D1FAE5] text-[#047857]' 
-              : selectedClaim.risk_score < 60 
-              ? 'bg-[#FEF3C7] text-[#B45309]' 
-              : 'bg-[#FCE7F3] text-[#DB2777]'
+            selectedInfo.isAnomaly
+              ? 'bg-[#FCE7F3] text-[#DB2777]'
+              : selectedInfo.isSafe
+              ? 'bg-[#D1FAE5] text-[#047857]'
+              : 'bg-[#FEF3C7] text-[#B45309]'
           }`}>
             <div className="flex items-center space-x-2">
-              <Sparkles className="w-5 h-5 stroke-[2.5]" />
+              {selectedInfo.isAnomaly ? (
+                <AlertTriangle className="w-5 h-5 stroke-[2.5]" />
+              ) : (
+                <Sparkles className="w-5 h-5 stroke-[2.5]" />
+              )}
               <h3 className="font-display font-black text-sm uppercase tracking-wide">
-                {selectedClaim.risk_score < 25
+                {selectedInfo.isAnomaly
+                  ? `🔴 AI Recommendation: Anomaly Detected (Difference: ${selectedInfo.diffPct.toFixed(1)}% > 10%)`
+                  : selectedInfo.isSafe
                   ? '🟢 AI Recommendation: Safe to Approve (Confidence: 98.6%)'
-                  : selectedClaim.risk_score < 60
-                  ? '🟡 AI Recommendation: Auditor Scrutiny Advised'
-                  : '🔴 AI Recommendation: Rejection Recommended (Severe Anomaly)'}
+                  : '🟡 AI Recommendation: Auditor Scrutiny Advised'}
               </h3>
             </div>
 
             <p className="text-xs leading-relaxed font-medium text-[#1E293B]">
-              {selectedClaim.risk_score < 25
-                ? 'The AI multi-sensor model cross-checked the generation curve against regional solar irradiance and substation meters. The grid export efficiency ratio (97.5%) is within normal transmission limits. No night generation or synthetic over-reporting was detected.'
-                : selectedClaim.risk_score < 60
-                ? 'The AI engine detected moderate variance between reported generation and regional baselines. Please inspect the comparison curve below before signing.'
-                : 'The AI engine detected severe divergence (>20%) between reported plant generation and the substation grid export meter. Output was also recorded during non-sunlight hours.'}
+              {selectedInfo.isAnomaly
+                ? `The AI engine detected an anomaly: The difference between reported plant output (${selectedInfo.outputMWh.toFixed(1)} MWh) and substation grid meter (${selectedInfo.meterMWh.toFixed(1)} MWh) is ${selectedInfo.diffPct.toFixed(1)}%, which exceeds the 10% acceptable tolerance limit. Potential grid transmission anomaly, meter miscalibration, or synthetic over-reporting detected.`
+                : selectedInfo.isSafe
+                ? `The AI multi-sensor model cross-checked the generation curve against regional solar irradiance and substation meters. The difference between plant output (${selectedInfo.outputMWh.toFixed(1)} MWh) and grid meter (${selectedInfo.meterMWh.toFixed(1)} MWh) is ${selectedInfo.diffPct.toFixed(1)}% (under 10% acceptable tolerance limit). No synthetic over-reporting or physical anomaly was detected.`
+                : `The AI engine detected moderate variance (${selectedInfo.diffPct.toFixed(1)}%) between reported plant output and regional baselines. Please inspect the comparison curve below before signing.`}
             </p>
           </div>
+
+          {/* Explainable Alerts (if any) */}
+          {selectedClaim.explainable_alerts && selectedClaim.explainable_alerts.length > 0 && (
+            <div className="space-y-2">
+              <span className="text-xs font-display font-black text-[#1E293B] uppercase tracking-wide">
+                AI Diagnostic Alerts ({selectedClaim.explainable_alerts.length})
+              </span>
+              <div className="space-y-2">
+                {selectedClaim.explainable_alerts.map((alert, idx) => (
+                  <div
+                    key={idx}
+                    className={`p-3.5 rounded-xl border-2 border-[#1E293B] text-xs flex items-start justify-between gap-3 shadow-pop-xs ${
+                      alert.severity === 'CRITICAL' || alert.severity === 'HIGH'
+                        ? 'bg-[#FFF1F2]'
+                        : 'bg-[#FFFBEB]'
+                    }`}
+                  >
+                    <div className="space-y-0.5">
+                      <div className="flex items-center space-x-2">
+                        <span className={`px-2 py-0.5 rounded-md font-display font-black text-[9px] border border-[#1E293B] ${
+                          alert.severity === 'CRITICAL' || alert.severity === 'HIGH'
+                            ? 'bg-[#FCE7F3] text-[#DB2777]'
+                            : 'bg-[#FEF3C7] text-[#B45309]'
+                        }`}>
+                          {alert.severity}
+                        </span>
+                        <span className="font-display font-black text-[#1E293B]">{alert.title}</span>
+                      </div>
+                      <p className="text-[11px] text-[#64748B] font-medium">{alert.description}</p>
+                    </div>
+                    {alert.impact_mwh > 0 && (
+                      <span className="font-mono font-bold text-[10px] text-[#DB2777] flex-shrink-0">
+                        -{alert.impact_mwh.toFixed(1)} MWh
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* 4 Multi-Sensor Sanity Checks */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div className="p-4 bg-white border-2 border-[#1E293B] rounded-2xl flex items-center justify-between shadow-pop-xs">
               <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 rounded-xl bg-[#D1FAE5] border border-[#1E293B] flex items-center justify-center text-[#047857]">
+                <div className={`w-9 h-9 rounded-xl border border-[#1E293B] flex items-center justify-center ${
+                  selectedInfo.isAnomaly ? 'bg-[#FCE7F3] text-[#DB2777]' : 'bg-[#D1FAE5] text-[#047857]'
+                }`}>
                   <Zap className="w-4 h-4 stroke-[2.5]" />
                 </div>
                 <div>
@@ -236,8 +309,10 @@ export const VerifierDashboard: React.FC = () => {
                   <p className="text-[11px] text-[#64748B] font-mono">{selectedClaim.validated_mwh.toFixed(1)} MWh Exported</p>
                 </div>
               </div>
-              <span className="pop-badge-mint text-[9px]">
-                Matched (2.5% Loss)
+              <span className={selectedInfo.isAnomaly ? 'pop-badge-pink text-[9px]' : 'pop-badge-mint text-[9px]'}>
+                {selectedInfo.isAnomaly
+                  ? `Anomaly (${selectedInfo.diffPct.toFixed(1)}% > 10%)`
+                  : `Matched (${selectedInfo.diffPct.toFixed(1)}% ≤ 10%)`}
               </span>
             </div>
 
@@ -273,7 +348,9 @@ export const VerifierDashboard: React.FC = () => {
 
             <div className="p-4 bg-white border-2 border-[#1E293B] rounded-2xl flex items-center justify-between shadow-pop-xs">
               <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 rounded-xl bg-[#D1FAE5] border border-[#1E293B] flex items-center justify-center text-[#047857]">
+                <div className={`w-9 h-9 rounded-xl border border-[#1E293B] flex items-center justify-center ${
+                  selectedInfo.isAnomaly ? 'bg-[#FCE7F3] text-[#DB2777]' : 'bg-[#D1FAE5] text-[#047857]'
+                }`}>
                   <Activity className="w-4 h-4 stroke-[2.5]" />
                 </div>
                 <div>
@@ -281,8 +358,8 @@ export const VerifierDashboard: React.FC = () => {
                   <p className="text-[11px] text-[#64748B] font-mono">Score: {(selectedClaim.risk_score / 100).toFixed(2)}</p>
                 </div>
               </div>
-              <span className={selectedClaim.risk_score < 25 ? 'pop-badge-mint text-[9px]' : 'pop-badge-pink text-[9px]'}>
-                {selectedClaim.risk_score < 25 ? 'Normal Cluster' : 'Anomaly Cluster'}
+              <span className={selectedInfo.isAnomaly ? 'pop-badge-pink text-[9px]' : 'pop-badge-mint text-[9px]'}>
+                {selectedInfo.isAnomaly ? 'Anomaly Cluster' : 'Normal Cluster'}
               </span>
             </div>
           </div>

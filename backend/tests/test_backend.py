@@ -116,30 +116,64 @@ def test_mrv_engine_clean_data():
     assert result["co2_offset_tonnes"] > 0
     assert result["ai_metrics"]["recommended_action"] == "RECOMMEND_APPROVAL"
 
-def test_mrv_engine_severe_over_reporting_anomaly():
-    """Test AI MRV engine flags night-time generation, synthetic over-reporting, and efficiency violations"""
+def test_mrv_engine_discrepancy_under_10_percent_safe():
+    """Test AI MRV engine recommends approval when difference between output and meter is under 10%"""
     project = MockProject()
     data_points = []
+    daylight_ghis = []
     for h in range(24):
-        night_fake_power = 40.0 if 1 <= h <= 4 else 0.0
-        daytime_power = 95.0 if 10 <= h <= 14 else 0.0
-        scada_p = night_fake_power + daytime_power
-        grid_p = 20.0 if 10 <= h <= 14 else 0.0
-
+        ghi = max(0.0, 900.0 * (1 - ((h - 12) / 6)**2)) if 6 <= h <= 18 else 0.0
+        if ghi > 10.0:
+            daylight_ghis.append(ghi)
+        scada_p = (ghi / 1000.0) * 85.0 if ghi > 0 else 0.0
+        # 5% line loss/difference (under 10%)
+        grid_p = scada_p * 0.95
         data_points.append({
             "timestamp": f"2026-08-16T{h:02d}:00:00Z",
             "scada_active_power_mw": scada_p,
-            "inverter_efficiency_pct": 108.5 if 10 <= h <= 14 else (95.0 if 1 <= h <= 4 else 0.0),
-            "global_horizontal_irradiance": 800.0 if 10 <= h <= 14 else 0.0,
+            "inverter_efficiency_pct": 98.4 if ghi > 0 else 0.0,
+            "global_horizontal_irradiance": ghi,
             "grid_export_power_mw": grid_p,
-            "ambient_temp_c": 35.0,
-            "wind_speed_ms": 2.0
+            "ambient_temp_c": 30.0,
+            "wind_speed_ms": 3.0
         })
 
-    result = mrv_engine.evaluate_telemetry_batch(project, data_points, satellite_irradiance_avg=250.0)
-    assert result["risk_score"] >= 60.0, f"Expected high risk score, got {result['risk_score']}"
-    assert len(result["alerts"]) > 0
-    assert result["ai_metrics"]["recommended_action"] in ["RECOMMEND_REJECTION", "FLAG_FOR_MANUAL_AUDIT"]
+    avg_daylight = sum(daylight_ghis) / len(daylight_ghis)
+    result = mrv_engine.evaluate_telemetry_batch(project, data_points, satellite_irradiance_avg=avg_daylight)
+    assert result["risk_score"] < 25.0
+    assert result["ai_metrics"]["recommended_action"] == "RECOMMEND_APPROVAL"
+    assert result["ai_metrics"]["disparity_pct"] <= 10.0
+
+def test_mrv_engine_discrepancy_greater_than_10_percent_anomaly():
+    """Test AI MRV engine flags an anomaly when difference between output and meter is greater than 10%"""
+    project = MockProject()
+    data_points = []
+    daylight_ghis = []
+    for h in range(24):
+        ghi = max(0.0, 900.0 * (1 - ((h - 12) / 6)**2)) if 6 <= h <= 18 else 0.0
+        if ghi > 10.0:
+            daylight_ghis.append(ghi)
+        scada_p = (ghi / 1000.0) * 85.0 if ghi > 0 else 0.0
+        # 16% difference (greater than 10%)
+        grid_p = scada_p * 0.84
+        data_points.append({
+            "timestamp": f"2026-08-16T{h:02d}:00:00Z",
+            "scada_active_power_mw": scada_p,
+            "inverter_efficiency_pct": 98.4 if ghi > 0 else 0.0,
+            "global_horizontal_irradiance": ghi,
+            "grid_export_power_mw": grid_p,
+            "ambient_temp_c": 30.0,
+            "wind_speed_ms": 3.0
+        })
+
+    avg_daylight = sum(daylight_ghis) / len(daylight_ghis)
+    result = mrv_engine.evaluate_telemetry_batch(project, data_points, satellite_irradiance_avg=avg_daylight)
+    assert result["risk_score"] >= 60.0
+    assert result["ai_metrics"]["recommended_action"] == "RECOMMEND_REJECTION"
+    assert result["ai_metrics"]["disparity_pct"] > 10.0
+    disparity_alerts = [a for a in result["alerts"] if a["category"] == "DISPARITY"]
+    assert len(disparity_alerts) > 0
+    assert "10%" in disparity_alerts[0]["title"]
 
 def test_cryptographic_oracle_signature():
     """Test EIP-712 / ECDSA digital signing and verification matching smart contract expectations"""

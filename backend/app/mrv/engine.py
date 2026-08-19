@@ -78,33 +78,18 @@ class MRVVerificationEngine:
         risk_components: List[float] = []
 
         # 1. Check Cross-Source SCADA vs Grid Export Disparity
-        if disparity_pct > 15.0:
+        if abs(disparity_pct) > 10.0:
+            severity = "CRITICAL" if abs(disparity_pct) > 20.0 else "HIGH"
             alerts.append({
-                "severity": "CRITICAL",
+                "severity": severity,
                 "category": "DISPARITY",
-                "title": "Severe SCADA Over-Reporting vs Grid Export Meter",
-                "description": f"SCADA claims {scada_total_mwh:.2f} MWh while Bidirectional Grid Export meter confirms only {grid_export_total_mwh:.2f} MWh ({disparity_pct:.1f}% discrepancy).",
+                "title": f"Discrepancy Exceeds 10% Tolerance ({abs(disparity_pct):.1f}% Divergence)",
+                "description": f"SCADA output claims {scada_total_mwh:.2f} MWh while Substation Grid Export meter confirms {grid_export_total_mwh:.2f} MWh ({abs(disparity_pct):.1f}% discrepancy exceeding the 10% threshold).",
                 "impact_mwh": max(0.0, disparity_mwh)
             })
-            risk_components.append(min(80.0, disparity_pct * 2.2))
-        elif disparity_pct > 5.0:
-            alerts.append({
-                "severity": "MEDIUM",
-                "category": "DISPARITY",
-                "title": "Moderate Meter Calibration Discrepancy",
-                "description": f"Reported SCADA is {disparity_pct:.1f}% higher than grid export meter. Standard line loss tolerance is ~3.5%.",
-                "impact_mwh": max(0.0, disparity_mwh)
-            })
-            risk_components.append(disparity_pct * 1.5)
-        elif disparity_pct < -10.0:
-            alerts.append({
-                "severity": "LOW",
-                "category": "DISPARITY",
-                "title": "Under-reported SCADA vs Grid Injected Energy",
-                "description": f"Grid meter recorded higher export than internal SCADA by {abs(disparity_pct):.1f}%.",
-                "impact_mwh": 0.0
-            })
-            risk_components.append(5.0)
+            risk_components.append(max(60.0, min(85.0, abs(disparity_pct) * 2.2)))
+        elif abs(disparity_pct) > 0.0:
+            risk_components.append(min(5.0, abs(disparity_pct) * 0.5))
         else:
             risk_components.append(2.0)
 
@@ -148,18 +133,20 @@ class MRVVerificationEngine:
             })
             risk_components.append(5.0)
 
-        # 4. Inverter Efficiency Check
-        abnormal_inverters = df[(df["inverter_efficiency_pct"] > 100.0) | (df["inverter_efficiency_pct"] < 80.0)]
-        if len(abnormal_inverters) > 0:
-            avg_eff = df["inverter_efficiency_pct"].mean()
-            alerts.append({
-                "severity": "MEDIUM",
-                "category": "INVERTER_DEGRADATION",
-                "title": "Inverter Anomaly / Sensor Miscalibration",
-                "description": f"{len(abnormal_inverters)} hours had anomalous inverter efficiency metrics (average batch efficiency: {avg_eff:.1f}%).",
-                "impact_mwh": 0.0
-            })
-            risk_components.append(15.0)
+        # 4. Inverter Efficiency Check (for operational generation hours)
+        operating_df = df[df["scada_active_power_mw"] > 0]
+        if len(operating_df) > 0:
+            abnormal_inverters = operating_df[(operating_df["inverter_efficiency_pct"] > 100.0) | (operating_df["inverter_efficiency_pct"] < 80.0)]
+            if len(abnormal_inverters) > 0:
+                avg_eff = operating_df["inverter_efficiency_pct"].mean()
+                alerts.append({
+                    "severity": "MEDIUM",
+                    "category": "INVERTER_DEGRADATION",
+                    "title": "Inverter Anomaly / Sensor Miscalibration",
+                    "description": f"{len(abnormal_inverters)} operational hours had anomalous inverter efficiency metrics (average batch efficiency: {avg_eff:.1f}%).",
+                    "impact_mwh": 0.0
+                })
+                risk_components.append(15.0)
 
         # 5. Satellite Cross-Correlation Check
         sat_corr = 0.95
