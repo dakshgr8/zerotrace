@@ -215,11 +215,23 @@ export const VerifierDashboard: React.FC = () => {
             <div className="flex items-center space-x-4">
               <div className="text-right text-xs">
                 <span className="text-[#64748B] font-display font-bold">Authorized Offset:</span>
-                <p className="font-display font-black text-2xl text-[#047857] font-mono">
-                  {selectedClaim.co2_offset_tonnes.toFixed(2)} ZTC
+                <p className={`font-display font-black text-2xl font-mono ${
+                  selectedInfo.isAnomaly ? 'text-[#DB2777]' : 'text-[#047857]'
+                }`}>
+                  {selectedInfo.isAnomaly ? '0.00' : selectedClaim.co2_offset_tonnes.toFixed(2)} ZTC
                 </p>
+                {selectedInfo.isAnomaly ? (
+                  <p className="text-[10px] text-[#DB2777] font-bold">Blocked (Difference &gt; 10%)</p>
+                ) : (
+                  <p className="text-[10px] text-[#047857] font-medium">Verified (≤10% Tolerance)</p>
+                )}
               </div>
-              <RiskGauge score={selectedClaim.risk_score} size={80} />
+              <RiskGauge
+                score={selectedClaim.risk_score}
+                isAnomaly={selectedInfo.isAnomaly}
+                label={selectedInfo.isAnomaly ? 'Anomaly' : selectedInfo.isSafe ? 'Low Risk' : 'Review Needed'}
+                size={80}
+              />
             </div>
           </div>
 

@@ -165,26 +165,31 @@ export const TelemetryComparisonChart: React.FC<TelemetryChartProps> = ({
 interface RiskGaugeProps {
   score: number;
   size?: number;
+  label?: string;
+  isAnomaly?: boolean;
 }
 
-export const RiskGauge: React.FC<RiskGaugeProps> = ({ score, size = 80 }) => {
+export const RiskGauge: React.FC<RiskGaugeProps> = ({ score, size = 80, label: customLabel, isAnomaly }) => {
   const strokeWidth = 8;
   const radius = (size - strokeWidth * 2) / 2;
   const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (score / 100) * circumference;
+
+  const effectiveAnomaly = isAnomaly !== undefined ? isAnomaly : score >= 60;
+  const effectiveScore = effectiveAnomaly && score < 60 ? 75 : score;
+  const strokeDashoffset = circumference - (effectiveScore / 100) * circumference;
 
   let strokeColor = '#10B981'; // Mint Safe
   let badgeClass = 'pop-badge-mint';
-  let label = 'Low Risk';
+  let label = customLabel || 'Low Risk';
 
-  if (score >= 60) {
+  if (effectiveAnomaly) {
     strokeColor = '#F472B6'; // Hot Pink Anomaly
     badgeClass = 'pop-badge-pink';
-    label = 'Severe Anomaly';
+    label = customLabel || 'Anomaly';
   } else if (score >= 25) {
     strokeColor = '#FBBF24'; // Amber Warning
     badgeClass = 'pop-badge-yellow';
-    label = 'Review Needed';
+    label = customLabel || 'Review Needed';
   }
 
   return (
@@ -215,7 +220,7 @@ export const RiskGauge: React.FC<RiskGaugeProps> = ({ score, size = 80 }) => {
 
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="font-display font-black text-base text-[#1E293B] leading-none">
-            {score.toFixed(0)}
+            {effectiveScore.toFixed(0)}
           </span>
           <span className="text-[9px] text-[#64748B] font-display font-bold uppercase mt-0.5">Risk</span>
         </div>
